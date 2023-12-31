@@ -1,4 +1,4 @@
-# Theoritical Processor module for IDA Pro 7.7 and 8.3
+# Theoretical Processor module for IDA Pro 7.7 and 8.3
 
 
 ## Features
