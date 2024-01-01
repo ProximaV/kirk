@@ -34,7 +34,7 @@ instruc_t Instructions[] =
 { "opB0",       CF_CHG1 | CF_USE2             }, //opB0            ($addr1), $imm                            
 { "test",       CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm                            
 { "bitset",       CF_CHG1 | CF_USE2             }, //opC8            ($addr1), $imm                            
-{ "opD0",       CF_CHG1 | CF_USE2             }, //opD0            ($addr1), $imm                            
+{ "bitclear",       CF_CHG1 | CF_USE2             }, //opD0            ($addr1), $imm                            
 { "opDA",       CF_USE1 | CF_USE2             }, //opDA            $imm, $imm                                
 { "opDB",       CF_USE1 | CF_USE2             }, //opDB            $imm, $imm                                
 { "bra",        CF_USE1 | CF_STOP | CF_JUMP   }, //bra $branch                                               

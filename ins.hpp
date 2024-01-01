@@ -37,7 +37,7 @@ typedef enum nameNum ENUM_SIZE(uint16)
         KIRK_INSN_B0,
         KIRK_INSN_C0_TEST,
         KIRK_INSN_C8_BITSET,
-        KIRK_INSN_D0,
+        KIRK_INSN_D0_BITCLEAR,
         KIRK_INSN_DA,
         KIRK_INSN_DB,
         KIRK_INSN_E0_BRA,

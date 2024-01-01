@@ -119,7 +119,7 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_C8_BITSET; goto decode_insn_format_addr_imm;
         break;
     case 0xD0://opD0            ($addr1), $imm      
-        itype = KIRK_INSN_D0; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_D0_BITCLEAR; goto decode_insn_format_addr_imm;
         break;
     case 0xDA://opDA            $imm, $imm      
         itype = KIRK_INSN_DA; goto decode_insn_format_imm_imm;

@@ -100,7 +100,7 @@ void out_kirk_t::out_insn(void)
     case KIRK_INSN_B0:
     case KIRK_INSN_C0_TEST:
     case KIRK_INSN_C8_BITSET:
-    case KIRK_INSN_D0:
+    case KIRK_INSN_D0_BITCLEAR:
         out_mnem();
         out_symbol('(');
         out_one_operand(0);

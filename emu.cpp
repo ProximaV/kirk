@@ -87,7 +87,7 @@ int kirk_t::kirk_emu(const insn_t& insn)
     case KIRK_INSN_B0:
     case KIRK_INSN_C0_TEST:
     case KIRK_INSN_C8_BITSET:
-    case KIRK_INSN_D0:
+    case KIRK_INSN_D0_BITCLEAR:
     case KIRK_INSN_DA:
     case KIRK_INSN_DB:
     case KIRK_INSN_F0_RET:
