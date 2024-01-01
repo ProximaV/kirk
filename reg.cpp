@@ -263,7 +263,7 @@ processor_t LPH =
     retcodes,                // 'Return' instruction codes
 
     0,                       // 
-    KIRK_INSN_F8 + 1,         // 
+    KIRK_INSN_F8_hw_crypto_hash_dma + 1,         // 
     Instructions,            // instruc
     0,                       // int tbyte_size;  -- doesn't exist
     { 0, 0, 0, 0 },          // char real_width[4];
