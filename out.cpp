@@ -92,15 +92,15 @@ void out_kirk_t::out_insn(void)
     case KIRK_INSN_39_OR:
     case KIRK_INSN_3A_AND:
     case KIRK_INSN_49:
-    case KIRK_INSN_80:
-    case KIRK_INSN_88:
-    case KIRK_INSN_90:
+    case KIRK_INSN_80_INC32:
+    case KIRK_INSN_88_DEC32:
+    case KIRK_INSN_90_LSH:
     case KIRK_INSN_98_NAND:
-    case KIRK_INSN_A0:
+    case KIRK_INSN_A0_SETMODE:
     case KIRK_INSN_B0:
     case KIRK_INSN_C0_TEST:
-    case KIRK_INSN_C8:
-    case KIRK_INSN_D0:
+    case KIRK_INSN_C8_BITSET:
+    case KIRK_INSN_D0_BITCLEAR:
         out_mnem();
         out_symbol('(');
         out_one_operand(0);
@@ -115,7 +115,7 @@ void out_kirk_t::out_insn(void)
     case KIRK_INSN_0E:
     case KIRK_INSN_13:
     case KIRK_INSN_16:
-    case KIRK_INSN_1B:
+    case KIRK_INSN_1B_INC:
     case KIRK_INSN_43:
     case KIRK_INSN_44:
     case KIRK_INSN_4B:
