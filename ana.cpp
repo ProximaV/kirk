@@ -60,7 +60,7 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_19_ADD; goto decode_insn_format_addr_data;
         break;
     case 0x1B://op1B            ($addr1), ($addr1)      
-        itype = KIRK_INSN_1B; goto decode_insn_format_addr_addr;
+        itype = KIRK_INSN_1B_INC; goto decode_insn_format_addr_addr;
         break;
     case 0x21://op21             ($addr1),$data 
         data = get_dword(ida_insn.ea + 4);
@@ -95,19 +95,19 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_53_MOV128; goto decode_insn_format_addr_addr;
         break;
     case 0x80://op80            ($addr1), $imm      
-        itype = KIRK_INSN_80; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_80_INC32; goto decode_insn_format_addr_imm;
         break;
     case 0x88://op88            ($addr1), $imm      
-        itype = KIRK_INSN_88; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_88_DEC32; goto decode_insn_format_addr_imm;
         break;
     case 0x90://op90            ($addr1), $imm      
-        itype = KIRK_INSN_90; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_90_LSH; goto decode_insn_format_addr_imm;
         break;
     case 0x98://op98            ($addr1), $imm      
         itype = KIRK_INSN_98_NAND; goto decode_insn_format_addr_imm;
         break;
     case 0xA0://opA0            ($addr1), $imm      
-        itype = KIRK_INSN_A0; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_A0_SETMODE; goto decode_insn_format_addr_imm;
         break;
     case 0xB0://opB0            ($addr1), $imm      
         itype = KIRK_INSN_B0; goto decode_insn_format_addr_imm;
@@ -116,7 +116,7 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_C0_TEST; goto decode_insn_format_addr_imm;
         break;
     case 0xC8://opC8            ($addr1), $imm      
-        itype = KIRK_INSN_C8; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_C8_BITSET; goto decode_insn_format_addr_imm;
         break;
     case 0xD0://opD0            ($addr1), $imm      
         itype = KIRK_INSN_D0; goto decode_insn_format_addr_imm;
