@@ -10,6 +10,7 @@ int rambase = 0xE0000000;
 int f_opcode(INSN insn) { return (insn >> 24) & 0xFF; }
 int f_addr1(INSN insn) { return (((insn >> 12) & 0xFFF) << 2) | rambase; }
 int f_addr2(INSN insn) { return ((insn  & 0xFFF) << 2) | rambase; }
+int f_addr3(INSN insn) { return (insn << 2) | rambase; }
 int f_imm1(INSN insn) { return (insn >> 12) & 0xFFF; }
 int f_imm2(INSN insn) { return insn & 0xFFF; }
 int f_branch(INSN insn) { return ((insn & 0xFFF) << 2); }
@@ -110,7 +111,7 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_A0_SETMODE; goto decode_insn_format_addr_imm;
         break;
     case 0xB0://opB0            ($addr1), $imm      
-        itype = KIRK_INSN_B0; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_B0_BYTESWAP; goto decode_insn_format_addr_imm;
         break;
     case 0xC0://test            ($addr1), $imm      
         itype = KIRK_INSN_C0_TEST; goto decode_insn_format_addr_imm;
@@ -122,10 +123,10 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_D0_BITCLEAR; goto decode_insn_format_addr_imm;
         break;
     case 0xDA://opDA            $imm, $imm      
-        itype = KIRK_INSN_DA; goto decode_insn_format_imm_imm;
+        itype = KIRK_INSN_DA_SETREG1; goto decode_insn_format_imm_imm;
         break;
     case 0xDB://opDB            $imm, $imm      
-        itype = KIRK_INSN_DB; goto decode_insn_format_imm_imm;
+        itype = KIRK_INSN_DB_SETREG2; goto decode_insn_format_imm_imm;
         break;
     case 0xE0://bra            $branch     
         itype = KIRK_INSN_E0_BRA; goto decode_insn_format_branch;

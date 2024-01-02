@@ -84,12 +84,12 @@ int kirk_t::kirk_emu(const insn_t& insn)
     case KIRK_INSN_90_LSH:
     case KIRK_INSN_98_NAND:
     case KIRK_INSN_A0_SETMODE:
-    case KIRK_INSN_B0:
+    case KIRK_INSN_B0_BYTESWAP:
     case KIRK_INSN_C0_TEST:
     case KIRK_INSN_C8_BITSET:
     case KIRK_INSN_D0_BITCLEAR:
-    case KIRK_INSN_DA:
-    case KIRK_INSN_DB:
+    case KIRK_INSN_DA_SETREG1:
+    case KIRK_INSN_DB_SETREG2:
     case KIRK_INSN_F0_RET:
     case KIRK_INSN_F8_hw_crypto_hash_dma:
         len = KIRK_emu_standard_insn(insn); break;
