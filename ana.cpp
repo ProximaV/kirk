@@ -123,10 +123,10 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_D0_BITCLEAR; goto decode_insn_format_addr_imm;
         break;
     case 0xDA://opDA            $imm, $imm      
-        itype = KIRK_INSN_DA_SETREG1; goto decode_insn_format_imm_imm;
+        itype = KIRK_INSN_DA_CLRZ; goto decode_insn_format_noops;
         break;
     case 0xDB://opDB            $imm, $imm      
-        itype = KIRK_INSN_DB_SETREG2; goto decode_insn_format_imm_imm;
+        itype = KIRK_INSN_DB_SETZ; goto decode_insn_format_noops;
         break;
     case 0xE0://bra            $branch     
         itype = KIRK_INSN_E0_BRA; goto decode_insn_format_branch;
@@ -150,7 +150,7 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_E9_CALL2; goto decode_insn_format_branch;
         break;
     case 0xF0://ret              
-        itype = KIRK_INSN_F0_RET; goto decode_insn_format_ret;
+        itype = KIRK_INSN_F0_RET; goto decode_insn_format_noops;
         break;
     case 0xF8://opF8            $imm, $imm      
         itype = KIRK_INSN_F8_hw_crypto_hash_dma; goto decode_insn_format_imm_imm;
@@ -167,7 +167,7 @@ decode_insn_format_empty:
         ida_insn.size = 0;
         return 0;
     }
-decode_insn_format_ret:
+decode_insn_format_noops:
     {
         ida_insn.itype = itype;
         ida_insn.size = 4;
@@ -184,6 +184,15 @@ decode_insn_format_addr_data:
         ida_insn.Op2.type = o_imm;
         ida_insn.Op2.kirk_type = KIRK_OPERAND_UIMM;
         ida_insn.Op2.value = data;
+        refinfo_t ri;
+        if (get_refinfo(&ri, ida_insn.ea, 1))
+        {
+            ea_t target, base;
+            ida_insn.Op2.type = o_mem;
+            calc_reference_data(&target, &base, ida_insn.ea, ri, (data << 2) | rambase);
+            ida_insn.Op2.kirk_type = KIRK_OPERAND_MEM;
+            ida_insn.Op2.addr = target;
+        }
         ida_insn.itype = itype;
         ida_insn.size = 8;
         return 8;

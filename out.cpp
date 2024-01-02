@@ -132,8 +132,6 @@ void out_kirk_t::out_insn(void)
         break;
         
         //$imm, $imm
-    case KIRK_INSN_DA_SETREG1:
-    case KIRK_INSN_DB_SETREG2:
     case KIRK_INSN_F8_hw_crypto_hash_dma:
         out_mnem();
         out_one_operand(0);
@@ -153,6 +151,8 @@ void out_kirk_t::out_insn(void)
         out_one_operand(0);
         break;
         // ret
+    case KIRK_INSN_DA_CLRZ:
+    case KIRK_INSN_DB_SETZ:
     case KIRK_INSN_F0_RET:
         out_mnem();
         break;
