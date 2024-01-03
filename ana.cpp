@@ -96,10 +96,10 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_53_MOV128; goto decode_insn_format_addr_addr;
         break;
     case 0x80://op80            ($addr1), $imm      
-        itype = KIRK_INSN_80_INC32; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_80_INC32; goto decode_insn_format_addr;
         break;
     case 0x88://op88            ($addr1), $imm      
-        itype = KIRK_INSN_88_DEC32; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_88_DEC32; goto decode_insn_format_addr;
         break;
     case 0x90://op90            ($addr1), $imm      
         itype = KIRK_INSN_90_LSH; goto decode_insn_format_addr_imm;
@@ -111,7 +111,7 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_A0_SETMODE; goto decode_insn_format_addr_imm;
         break;
     case 0xB0://opB0            ($addr1), $imm      
-        itype = KIRK_INSN_B0_BYTESWAP; goto decode_insn_format_addr_imm;
+        itype = KIRK_INSN_B0_BYTESWAP; goto decode_insn_format_addr;
         break;
     case 0xC0://test            ($addr1), $imm      
         itype = KIRK_INSN_C0_TEST; goto decode_insn_format_addr_imm;
@@ -197,6 +197,19 @@ decode_insn_format_addr_data:
         ida_insn.size = 8;
         return 8;
     }
+decode_insn_format_addr:
+    {
+        int addr1 = f_addr1(insn);
+        int addr2 = f_addr2(insn);
+
+        ida_insn.Op1.type = o_mem;
+        ida_insn.Op1.kirk_type = KIRK_OPERAND_MEM;
+        ida_insn.Op1.addr = addr1;
+        ida_insn.itype = itype;
+        ida_insn.size = 4;
+        return 4;
+    }
+
 decode_insn_format_addr_addr:
     {
         int addr1 = f_addr1(insn);

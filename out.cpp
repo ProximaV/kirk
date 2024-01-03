@@ -81,6 +81,15 @@ void out_kirk_t::out_insn(void)
 {
     switch (insn.itype)
     {
+        ///($addr)
+    case KIRK_INSN_B0_BYTESWAP:
+    case KIRK_INSN_80_INC32:
+    case KIRK_INSN_88_DEC32:
+        out_mnem();
+        out_symbol('(');
+        out_one_operand(0);
+        out_symbol(')');
+        break;
         //($addr1), $data
         //($addr1), $imm
     case KIRK_INSN_09_STORE:
@@ -92,12 +101,9 @@ void out_kirk_t::out_insn(void)
     case KIRK_INSN_39_OR:
     case KIRK_INSN_3A_AND:
     case KIRK_INSN_49:
-    case KIRK_INSN_80_INC32:
-    case KIRK_INSN_88_DEC32:
     case KIRK_INSN_90_LSH:
     case KIRK_INSN_98_NAND:
     case KIRK_INSN_A0_SETMODE:
-    case KIRK_INSN_B0_BYTESWAP:
     case KIRK_INSN_C0_TEST:
     case KIRK_INSN_C8_BITSET:
     case KIRK_INSN_D0_BITCLEAR:
