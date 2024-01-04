@@ -45,6 +45,6 @@ instruc_t Instructions[] =
 { "call",       CF_USE1 | CF_CALL             }, //call $addr                                                
 { "call2",      CF_USE1 | CF_CALL             }, //call2 $addr                                               
 { "ret",        CF_STOP                       }, //ret
-{ "hw_crypto_hash_dma",       CF_USE1 | CF_USE2             }, // hw_crypto_hash_dma            $imm, $imm                                
+{ "intr",       CF_USE1 | CF_USE2             }, // hw_crypto_hash_dma            $imm, $imm                                
                                                                                                              
 };
