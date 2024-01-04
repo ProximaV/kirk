@@ -15,13 +15,13 @@ instruc_t Instructions[] =
 { "op12",       CF_USE1 | CF_USE2             }, //op12          ($addr1),$data                              
 { "op13",       CF_CHG1 | CF_USE2             }, //op13            ($addr1), ($addr1)                        
 { "xor32",       CF_CHG1 | CF_USE2             }, //mov8            ($addr1), ($addr1)                        
-{ "add",       CF_CHG1 | CF_USE2             }, //add             ($addr1),$data                           
-{ "inc",       CF_CHG1 | CF_USE2             }, //inc            ($addr1), ($addr1)                        
+{ "addi",       CF_CHG1 | CF_USE2             }, //addi             ($addr1),$data                           
+{ "adda",       CF_CHG1 | CF_USE2             }, //adda            ($addr1), ($addr1)                        
 { "op21",       CF_USE1 | CF_USE2             }, //op21            ($addr1),$data                            
 { "sub",       CF_CHG1 | CF_USE2             }, //sub             ($addr1),$data                           
-{ "and",       CF_CHG1 | CF_USE2             }, //or             ($addr1),$data                           
-{ "and",        CF_CHG1 | CF_USE2             }, //and             ($addr1),$data                            
-{ "mov16",       CF_CHG1 | CF_USE2             }, //op43           ($addr1), ($addr1)                         
+{ "andi",       CF_CHG1 | CF_USE2             }, //andi             ($addr1),$data                           
+{ "ori",        CF_CHG1 | CF_USE2             }, //ori             ($addr1),$data                            
+{ "mov16",       CF_CHG1 | CF_USE2             }, //mov16           ($addr1), ($addr1)                         
 { "op44",       CF_CHG1 | CF_USE2             }, //op44           ($addr1), ($addr1)                         
 { "op49",       CF_CHG1 | CF_USE2             }, //op49             ($addr1),$data                           
 { "op4B",       CF_CHG1 | CF_USE2             }, //op4B            ($addr1), ($addr1)                        
@@ -38,8 +38,8 @@ instruc_t Instructions[] =
 { "clrz",       0              }, //clrz            $imm, $imm                                
 { "setz",       0               }, //setz            $imm, $imm                                
 { "b",        CF_USE1 | CF_STOP | CF_JUMP   }, //bra $branch                                               
-{ "bne",        CF_USE1                       }, //bne $addr                                                 
-{ "beq",        CF_USE1                       }, //beq $addr                                                 
+{ "bnz",        CF_USE1                       }, //bne $addr                                                 
+{ "bz",        CF_USE1                       }, //beq $addr                                                 
 { "bgt",        CF_USE1                       }, //bgt $addr                                                 
 { "blt",        CF_USE1                       }, //blt $addr                                                 
 { "call",       CF_USE1 | CF_CALL             }, //call $addr                                                
