@@ -54,14 +54,14 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_13; goto decode_insn_format_addr_addr;
         break;
     case 0x16://op16            ($addr1), ($addr1)      
-        itype = KIRK_INSN_16; goto decode_insn_format_addr_addr;
+        itype = KIRK_INSN_16_XOR32; goto decode_insn_format_addr_addr;
         break;
     case 0x19://op19             ($addr1),$data 
         data = get_dword(ida_insn.ea + 4);
-        itype = KIRK_INSN_19_ADD; goto decode_insn_format_addr_data;
+        itype = KIRK_INSN_19_ADDI; goto decode_insn_format_addr_data;
         break;
     case 0x1B://op1B            ($addr1), ($addr1)      
-        itype = KIRK_INSN_1B_INC; goto decode_insn_format_addr_addr;
+        itype = KIRK_INSN_1B_ADDA; goto decode_insn_format_addr_addr;
         break;
     case 0x21://op21             ($addr1),$data 
         data = get_dword(ida_insn.ea + 4);
@@ -73,14 +73,14 @@ int kirk_t::kirk_ana(insn_t* _insn)
         break;
     case 0x39://op39             ($addr1),$data 
         data = get_dword(ida_insn.ea + 4);
-        itype = KIRK_INSN_39_OR; goto decode_insn_format_addr_data;
+        itype = KIRK_INSN_39_ANDI; goto decode_insn_format_addr_data;
         break;
     case 0x3A://and             ($addr1),$data 
         data = get_dword(ida_insn.ea + 4);
-        itype = KIRK_INSN_3A_AND; goto decode_insn_format_addr_data;
+        itype = KIRK_INSN_3A_ORI; goto decode_insn_format_addr_data;
         break;
     case 0x43://op43            ($addr1), ($addr1)      
-        itype = KIRK_INSN_43; goto decode_insn_format_addr_addr;
+        itype = KIRK_INSN_43_MOV16; goto decode_insn_format_addr_addr;
         break;
     case 0x44://op44            ($addr1), ($addr1)      
         itype = KIRK_INSN_44; goto decode_insn_format_addr_addr;
@@ -129,13 +129,13 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_DB_SETZ; goto decode_insn_format_noops;
         break;
     case 0xE0://bra            $branch     
-        itype = KIRK_INSN_E0_BRA; goto decode_insn_format_branch;
+        itype = KIRK_INSN_E0_B; goto decode_insn_format_branch;
         break;
     case 0xE1://bne            $branch     
-        itype = KIRK_INSN_E1_BNE; goto decode_insn_format_branch;
+        itype = KIRK_INSN_E1_BNZ; goto decode_insn_format_branch;
         break;
     case 0xE2://beq            $branch     
-        itype = KIRK_INSN_E2_BEQ; goto decode_insn_format_branch;
+        itype = KIRK_INSN_E2_BZ; goto decode_insn_format_branch;
         break;
     case 0xE3://bge            $branch     
         itype = KIRK_INSN_E3_BGT; goto decode_insn_format_branch;
@@ -153,7 +153,7 @@ int kirk_t::kirk_ana(insn_t* _insn)
         itype = KIRK_INSN_F0_RET; goto decode_insn_format_noops;
         break;
     case 0xF8://opF8            $imm, $imm      
-        itype = KIRK_INSN_F8_hw_crypto_hash_dma; goto decode_insn_format_imm_imm;
+        itype = KIRK_INSN_F8_INTR; goto decode_insn_format_imm_imm;
         break;
     default:
         itype = KIRK_INSN_X_INVALID; goto decode_insn_format_empty;
@@ -215,12 +215,12 @@ decode_insn_format_addr_addr:
         int addr1 = f_addr1(insn);
         int addr2 = f_addr2(insn);
 
-        ida_insn.Op1.type = o_mem;
-        ida_insn.Op1.kirk_type = KIRK_OPERAND_MEM;
-        ida_insn.Op1.addr = addr1;
         ida_insn.Op2.type = o_mem;
         ida_insn.Op2.kirk_type = KIRK_OPERAND_MEM;
-        ida_insn.Op2.addr = addr2;
+        ida_insn.Op2.addr = addr1;
+        ida_insn.Op1.type = o_mem;
+        ida_insn.Op1.kirk_type = KIRK_OPERAND_MEM;
+        ida_insn.Op1.addr = addr2;
         ida_insn.itype = itype;
         ida_insn.size = 4;
         return 4;

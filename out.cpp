@@ -95,11 +95,11 @@ void out_kirk_t::out_insn(void)
     case KIRK_INSN_09_STORE:
     case KIRK_INSN_11_CMP:
     case KIRK_INSN_12:
-    case KIRK_INSN_19_ADD:
+    case KIRK_INSN_19_ADDI:
     case KIRK_INSN_21:
     case KIRK_INSN_29_SUB:
-    case KIRK_INSN_39_OR:
-    case KIRK_INSN_3A_AND:
+    case KIRK_INSN_39_ANDI:
+    case KIRK_INSN_3A_ORI:
     case KIRK_INSN_49:
     case KIRK_INSN_90_LSH:
     case KIRK_INSN_98_NAND:
@@ -120,9 +120,9 @@ void out_kirk_t::out_insn(void)
     case KIRK_INSN_0D:
     case KIRK_INSN_0E:
     case KIRK_INSN_13:
-    case KIRK_INSN_16:
-    case KIRK_INSN_1B_INC:
-    case KIRK_INSN_43:
+    case KIRK_INSN_16_XOR32:
+    case KIRK_INSN_1B_ADDA:
+    case KIRK_INSN_43_MOV16:
     case KIRK_INSN_44:
     case KIRK_INSN_4B:
     case KIRK_INSN_53_MOV128:
@@ -138,7 +138,7 @@ void out_kirk_t::out_insn(void)
         break;
         
         //$imm, $imm
-    case KIRK_INSN_F8_hw_crypto_hash_dma:
+    case KIRK_INSN_F8_INTR:
         out_mnem();
         out_one_operand(0);
         out_symbol(',');
@@ -146,9 +146,9 @@ void out_kirk_t::out_insn(void)
         out_one_operand(1);
         break;
         //$branch
-    case KIRK_INSN_E0_BRA:
-    case KIRK_INSN_E1_BNE:
-    case KIRK_INSN_E2_BEQ:
+    case KIRK_INSN_E0_B:
+    case KIRK_INSN_E1_BNZ:
+    case KIRK_INSN_E2_BZ:
     case KIRK_INSN_E3_BGT:
     case KIRK_INSN_E4_BLT:
     case KIRK_INSN_E8_CALL:
