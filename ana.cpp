@@ -48,7 +48,7 @@ int kirk_t::kirk_ana(insn_t* _insn)
         break;
     case 0x12://op12          ($addr1),$data
         data = get_dword(ida_insn.ea + 4);
-        itype = KIRK_INSN_12; goto decode_insn_format_addr_data;
+        itype = KIRK_INSN_12_CMPPLUS; goto decode_insn_format_addr_data;
         break;
     case 0x13://op13            ($addr1), ($addr1)      
         itype = KIRK_INSN_13; goto decode_insn_format_addr_addr;
@@ -87,10 +87,10 @@ int kirk_t::kirk_ana(insn_t* _insn)
         break;
     case 0x49://op49             ($addr1),$data 
         data = get_dword(ida_insn.ea + 4);
-        itype = KIRK_INSN_49; goto decode_insn_format_addr_data;
+        itype = KIRK_INSN_49_XORI; goto decode_insn_format_addr_data;
         break;
     case 0x4B://op4B            ($addr1), ($addr1)      
-        itype = KIRK_INSN_4B; goto decode_insn_format_addr_addr;
+        itype = KIRK_INSN_4B_XOR128; goto decode_insn_format_addr_addr;
         break;
     case 0x53://op53            ($addr1), ($addr1)      
         itype = KIRK_INSN_53_MOV128; goto decode_insn_format_addr_addr;

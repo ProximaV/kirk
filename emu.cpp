@@ -65,7 +65,7 @@ int kirk_t::kirk_emu(const insn_t& insn)
     case KIRK_INSN_0D:
     case KIRK_INSN_0E:
     case KIRK_INSN_11_CMP:
-    case KIRK_INSN_12:
+    case KIRK_INSN_12_CMPPLUS:
     case KIRK_INSN_13:
     case KIRK_INSN_16_XOR32:
     case KIRK_INSN_19_ADDI:
@@ -76,8 +76,8 @@ int kirk_t::kirk_emu(const insn_t& insn)
     case KIRK_INSN_3A_ORI:
     case KIRK_INSN_43_MOV16:
     case KIRK_INSN_44:
-    case KIRK_INSN_49:
-    case KIRK_INSN_4B:
+    case KIRK_INSN_49_XORI:
+    case KIRK_INSN_4B_XOR128:
     case KIRK_INSN_53_MOV128:
     case KIRK_INSN_80_INC32:
     case KIRK_INSN_88_DEC32:
