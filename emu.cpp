@@ -77,7 +77,7 @@ int kirk_t::kirk_emu(const insn_t& insn)
     case KIRK_INSN_43_MOV16:
     case KIRK_INSN_44:
     case KIRK_INSN_49_XORI:
-    case KIRK_INSN_4B_XOR128:
+    case KIRK_INSN_4B_XNOR32:
     case KIRK_INSN_53_MOV128:
     case KIRK_INSN_80_INC32:
     case KIRK_INSN_88_DEC32:

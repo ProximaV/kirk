@@ -27,7 +27,7 @@ typedef enum nameNum ENUM_SIZE(uint16)
         KIRK_INSN_43_MOV16,
         KIRK_INSN_44,
         KIRK_INSN_49_XORI,
-        KIRK_INSN_4B_XOR128,
+        KIRK_INSN_4B_XNOR32,
         KIRK_INSN_53_MOV128,
         KIRK_INSN_80_INC32,
         KIRK_INSN_88_DEC32,

@@ -124,7 +124,7 @@ void out_kirk_t::out_insn(void)
     case KIRK_INSN_1B_ADDA:
     case KIRK_INSN_43_MOV16:
     case KIRK_INSN_44:
-    case KIRK_INSN_4B_XOR128:
+    case KIRK_INSN_4B_XNOR32:
     case KIRK_INSN_53_MOV128:
         out_mnem();
         out_symbol('(');

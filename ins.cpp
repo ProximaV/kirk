@@ -24,7 +24,7 @@ instruc_t Instructions[] =
 { "mov16",       CF_CHG1 | CF_USE2             }, //mov16           ($addr1), ($addr1)                         
 { "op44",        CF_CHG1 | CF_USE2             }, //op44           ($addr1), ($addr1)                         
 { "xori",        CF_CHG1 | CF_USE2             }, //xori             ($addr1),$data                           
-{ "xor128",      CF_CHG1 | CF_USE2             }, //xor128            ($addr1), ($addr1)                        
+{ "xnor32",      CF_CHG1 | CF_USE2             }, //xor128            ($addr1), ($addr1)                        
 { "mov128",      CF_CHG1 | CF_USE2             }, //mov128            ($addr1), ($addr1)                        
 { "inc32",       CF_CHG1                       }, //inc32            ($addr1), $imm                            
 { "dec32",       CF_CHG1                       }, //dec32            ($addr1), $imm                            
