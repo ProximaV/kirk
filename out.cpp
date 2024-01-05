@@ -93,13 +93,13 @@ void out_kirk_t::out_insn(void)
         //($addr1), $data
         //($addr1), $imm
     case KIRK_INSN_09_STORE:
-    case KIRK_INSN_11_CMP:
+    case KIRK_INSN_11_CMPI:
     case KIRK_INSN_12_CMPPLUS:
     case KIRK_INSN_19_ADDI:
     case KIRK_INSN_21:
-    case KIRK_INSN_29_SUB:
+    case KIRK_INSN_29_SUBI:
     case KIRK_INSN_39_ANDI:
-    case KIRK_INSN_3A_ORI:
+    case KIRK_INSN_3A_ANDA:
     case KIRK_INSN_49_XORI:
     case KIRK_INSN_90_LSH:
     case KIRK_INSN_98_NAND:
@@ -117,14 +117,14 @@ void out_kirk_t::out_insn(void)
         break;
         // ($addr1), ($addr1)
     case KIRK_INSN_0B_MOV32:
-    case KIRK_INSN_0D:
-    case KIRK_INSN_0E:
-    case KIRK_INSN_13:
-    case KIRK_INSN_16_XOR32:
+    case KIRK_INSN_0D_MOV32A:
+    case KIRK_INSN_0E_MOV32AA:
+    case KIRK_INSN_13_CMPA:
+    case KIRK_INSN_16_SUBA:
     case KIRK_INSN_1B_ADDA:
     case KIRK_INSN_43_MOV16:
-    case KIRK_INSN_44:
-    case KIRK_INSN_4B_XNOR32:
+    case KIRK_INSN_44_ORA:
+    case KIRK_INSN_4B_XORA:
     case KIRK_INSN_53_MOV128:
         out_mnem();
         out_symbol('(');

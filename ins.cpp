@@ -11,20 +11,20 @@ instruc_t Instructions[] =
 { "mov32",       CF_CHG1 | CF_USE2             }, //mov32            ($addr1), ($addr1)                        
 { "op0D",        CF_CHG1 | CF_USE2             }, //op0D            ($addr1), ($addr1)                        
 { "op0E",        CF_CHG1 | CF_USE2             }, //op0E            ($addr1), ($addr1)                        
-{ "cmp",         CF_USE1 | CF_USE2             }, //cmp            ($addr1),$data                             
+{ "cmpi",        CF_USE1 | CF_USE2             }, //cmp            ($addr1),$data                             
 { "cmp+",        CF_USE1 | CF_USE2             }, //cmp+          ($addr1),$data                              
-{ "op13",        CF_CHG1 | CF_USE2             }, //op13            ($addr1), ($addr1)                        
-{ "xor32",       CF_CHG1 | CF_USE2             }, //xor32            ($addr1), ($addr1)                        
+{ "cmpa",        CF_CHG1 | CF_USE2             }, //op13            ($addr1), ($addr1)                        
+{ "suba",        CF_CHG1 | CF_USE2             }, //suba            ($addr1), ($addr1)                        
 { "addi",        CF_CHG1 | CF_USE2             }, //addi             ($addr1),$data                           
 { "adda",        CF_CHG1 | CF_USE2             }, //adda            ($addr1), ($addr1)                        
 { "op21",        CF_USE1 | CF_USE2             }, //op21            ($addr1),$data                            
-{ "sub",         CF_CHG1 | CF_USE2             }, //sub             ($addr1),$data                           
+{ "subi",        CF_CHG1 | CF_USE2             }, //subi             ($addr1),$data                           
 { "andi",        CF_CHG1 | CF_USE2             }, //andi             ($addr1),$data                           
-{ "ori",         CF_CHG1 | CF_USE2             }, //ori             ($addr1),$data                            
+{ "anda",        CF_CHG1 | CF_USE2             }, //andiu             ($addr1),$data                            
 { "mov16",       CF_CHG1 | CF_USE2             }, //mov16           ($addr1), ($addr1)                         
-{ "op44",        CF_CHG1 | CF_USE2             }, //op44           ($addr1), ($addr1)                         
+{ "ora",         CF_CHG1 | CF_USE2             }, //ora           ($addr1), ($addr1)                         
 { "xori",        CF_CHG1 | CF_USE2             }, //xori             ($addr1),$data                           
-{ "xnor32",      CF_CHG1 | CF_USE2             }, //xor128            ($addr1), ($addr1)                        
+{ "xora",        CF_CHG1 | CF_USE2             }, //xora            ($addr1), ($addr1)                        
 { "mov128",      CF_CHG1 | CF_USE2             }, //mov128            ($addr1), ($addr1)                        
 { "inc32",       CF_CHG1                       }, //inc32            ($addr1), $imm                            
 { "dec32",       CF_CHG1                       }, //dec32            ($addr1), $imm                            
