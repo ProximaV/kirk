@@ -9,8 +9,8 @@ instruc_t Instructions[] =
 { "--invalid--", 0                             }, //--invalid--                                               
 { "store",       CF_CHG1 | CF_USE2             }, //store             ($addr1),$data                          
 { "mov32",       CF_CHG1 | CF_USE2             }, //mov32            ($addr1), ($addr1)                        
-{ "op0D",        CF_CHG1 | CF_USE2             }, //op0D            ($addr1), ($addr1)                        
-{ "op0E",        CF_CHG1 | CF_USE2             }, //op0E            ($addr1), ($addr1)                        
+{ "mov32a",        CF_CHG1 | CF_USE2             }, //op0D            ($addr1), ($addr1)                        
+{ "mov32aa",        CF_CHG1 | CF_USE2             }, //op0E            ($addr1), ($addr1)                        
 { "cmpi",        CF_USE1 | CF_USE2             }, //cmp            ($addr1),$data                             
 { "cmp+",        CF_USE1 | CF_USE2             }, //cmp+          ($addr1),$data                              
 { "cmpa",        CF_CHG1 | CF_USE2             }, //op13            ($addr1), ($addr1)                        
