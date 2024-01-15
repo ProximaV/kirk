@@ -70,7 +70,7 @@ int kirk_t::kirk_emu(const insn_t& insn)
     case KIRK_INSN_16_SUBA:
     case KIRK_INSN_19_ADDI:
     case KIRK_INSN_1B_ADDA:
-    case KIRK_INSN_21:
+    case KIRK_INSN_21_ADDC:
     case KIRK_INSN_29_SUBI:
     case KIRK_INSN_39_ANDI:
     case KIRK_INSN_3A_ANDA:

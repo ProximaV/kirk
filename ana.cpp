@@ -65,7 +65,7 @@ int kirk_t::kirk_ana(insn_t* _insn)
         break;
     case 0x21://op21             ($addr1),$data 
         data = get_dword(ida_insn.ea + 4);
-        itype = KIRK_INSN_21; goto decode_insn_format_addr_data;
+        itype = KIRK_INSN_21_ADDC; goto decode_insn_format_addr_data;
         break;
     case 0x29://op29             ($addr1),$data 
         data = get_dword(ida_insn.ea + 4);

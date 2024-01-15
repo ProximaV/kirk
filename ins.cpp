@@ -9,15 +9,15 @@ instruc_t Instructions[] =
 { "--invalid--", 0                             }, //--invalid--                                               
 { "store",       CF_CHG1 | CF_USE2             }, //store             ($addr1),$data                          
 { "mov32",       CF_CHG1 | CF_USE2             }, //mov32            ($addr1), ($addr1)                        
-{ "mov32a",        CF_CHG1 | CF_USE2             }, //op0D            ($addr1), ($addr1)                        
-{ "mov32aa",        CF_CHG1 | CF_USE2             }, //op0E            ($addr1), ($addr1)                        
+{ "mov32a",      CF_CHG1 | CF_USE2             }, //op0D            ($addr1), ($addr1)                        
+{ "mov32aa",     CF_CHG1 | CF_USE2             }, //op0E            ($addr1), ($addr1)                        
 { "cmpi",        CF_USE1 | CF_USE2             }, //cmp            ($addr1),$data                             
 { "cmp+",        CF_USE1 | CF_USE2             }, //cmp+          ($addr1),$data                              
 { "cmpa",        CF_CHG1 | CF_USE2             }, //op13            ($addr1), ($addr1)                        
 { "suba",        CF_CHG1 | CF_USE2             }, //suba            ($addr1), ($addr1)                        
 { "addi",        CF_CHG1 | CF_USE2             }, //addi             ($addr1),$data                           
 { "adda",        CF_CHG1 | CF_USE2             }, //adda            ($addr1), ($addr1)                        
-{ "op21",        CF_USE1 | CF_USE2             }, //op21            ($addr1),$data                            
+{ "addc",        CF_CHG1                       }, //addc            ($addr1)                            
 { "subi",        CF_CHG1 | CF_USE2             }, //subi             ($addr1),$data                           
 { "andi",        CF_CHG1 | CF_USE2             }, //andi             ($addr1),$data                           
 { "anda",        CF_CHG1 | CF_USE2             }, //andiu             ($addr1),$data                            

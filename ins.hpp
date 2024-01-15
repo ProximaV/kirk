@@ -20,7 +20,7 @@ typedef enum nameNum ENUM_SIZE(uint16)
         KIRK_INSN_16_SUBA,
         KIRK_INSN_19_ADDI,
         KIRK_INSN_1B_ADDA,
-        KIRK_INSN_21,
+        KIRK_INSN_21_ADDC,
         KIRK_INSN_29_SUBI,
         KIRK_INSN_39_ANDI,
         KIRK_INSN_3A_ANDA,
