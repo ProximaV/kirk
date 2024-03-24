@@ -164,7 +164,8 @@ static const asm_t kirkasm =
     ".double",     // double (8 bytes)
     NULL,          // tbyte  (10/12 bytes)
     NULL,          // packed decimal real
-    NULL,          // arrays (#h,#d,#v,#s(...)
+    NULL,          // what??
+    "#d dup(#v)",  // array keyword (#h,#d,#v,#s(...))
     ".block %s",   // uninited arrays
     ".equ",        // equ
     NULL,          // seg prefix
