@@ -3,18 +3,10 @@
 
 ## Features
 
-* Analysis of the core instruction set
+* Analysis of the known instruction set
 * Memory map cfg for ROM and RAM 
-* Basic data/code reference detection
+* Basic data/code reference detection, manual address support too
 * Branch detection
-
-## To-do
-
-* Instruction set is incomplete. Each opcode is identified using `opXX` notation if unknown
-* There are cases of memory references as data, these need to be handled correctly and xrefs created
-* Many of the conditional branches are wild guesses and need correction
-* the directionality of operands needs to be determined and corrected
-* Everything else
 
 
 ## Building
