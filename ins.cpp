@@ -7,10 +7,15 @@ instruc_t Instructions[] =
 
 { "",            0                             }, //unknown                                                   
 { "--invalid--", 0                             }, //--invalid--                                               
+{ "nop",      0                                }, //Nop            
+{ "store2",      CF_CHG1 | CF_USE2             }, //store2            ($addr1),$data         
 { "store",       CF_CHG1 | CF_USE2             }, //store             ($addr1),$data                          
+{ "movX",       CF_CHG1 | CF_USE2             }, //movx            ($addr1), ($addr1)                        
 { "mov32",       CF_CHG1 | CF_USE2             }, //mov32            ($addr1), ($addr1)                        
+{ "movY",       CF_CHG1 | CF_USE2             }, //movY            ($addr1), ($addr1)                        
 { "mov32a",      CF_CHG1 | CF_USE2             }, //op0D            ($addr1), ($addr1)                        
 { "mov32aa",     CF_CHG1 | CF_USE2             }, //op0E            ($addr1), ($addr1)                        
+{ "cmpX",        CF_USE1 | CF_USE2             }, //cmpX            ($addr1),$data                             
 { "cmpi",        CF_USE1 | CF_USE2             }, //cmp            ($addr1),$data                             
 { "cmp+",        CF_USE1 | CF_USE2             }, //cmp+          ($addr1),$data                              
 { "cmpa",        CF_CHG1 | CF_USE2             }, //op13            ($addr1), ($addr1)                        
@@ -19,21 +24,33 @@ instruc_t Instructions[] =
 { "adda",        CF_CHG1 | CF_USE2             }, //adda            ($addr1), ($addr1)                        
 { "addc",        CF_CHG1                       }, //addc            ($addr1)                            
 { "subi",        CF_CHG1 | CF_USE2             }, //subi             ($addr1),$data                           
+{ "op30",        CF_CHG1 | CF_USE2             }, //subi             ($addr1),$data                           
+{ "op38",        CF_CHG1 | CF_USE2             }, //subi             ($addr1),$data                           
 { "andi",        CF_CHG1 | CF_USE2             }, //andi             ($addr1),$data                           
 { "anda",        CF_CHG1 | CF_USE2             }, //andiu             ($addr1),$data                            
+{ "mov8",       CF_CHG1 | CF_USE2             }, //mov16           ($addr1), ($addr1)                         
 { "mov16",       CF_CHG1 | CF_USE2             }, //mov16           ($addr1), ($addr1)                         
 { "ora",         CF_CHG1 | CF_USE2             }, //ora           ($addr1), ($addr1)                         
 { "xori",        CF_CHG1 | CF_USE2             }, //xori             ($addr1),$data                           
 { "xora",        CF_CHG1 | CF_USE2             }, //xora            ($addr1), ($addr1)                        
-{ "mov128",      CF_CHG1 | CF_USE2             }, //mov128            ($addr1), ($addr1)                        
+{ "xorx",        CF_CHG1 | CF_USE2             }, //xora            ($addr1), ($addr1)  
+{ "mov128",      CF_CHG1 | CF_USE2             }, //mov128            ($addr1), ($addr1) 
+{ "jz",          CF_USE1                       }, //beq $addr
+{ "jnz",          CF_USE1                       }, //beq $addr
 { "inc32",       CF_CHG1                       }, //inc32            ($addr1), $imm                            
 { "dec32",       CF_CHG1                       }, //dec32            ($addr1), $imm                            
+{ "op89",         CF_SHFT | CF_CHG1 | CF_USE2   }, //lsh            ($addr1), $imm                            
+{ "op8B",         CF_SHFT | CF_CHG1 | CF_USE2   }, //lsh            ($addr1), $imm                            
 { "lsh",         CF_SHFT | CF_CHG1 | CF_USE2   }, //lsh            ($addr1), $imm                            
 { "rsh",         CF_SHFT | CF_CHG1 | CF_USE2   }, //rsh            ($addr1), $imm                            
 { "setmode",     CF_CHG1 | CF_USE2             }, //setmode            ($addr1), $imm                            
 { "byteswap",    CF_CHG1 | CF_USE2             }, //byteswap            ($addr1), $imm                            
 { "test",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm                            
+{ "check3",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm                            
+{ "check6",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm                            
+{ "check7",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm   
 { "bitset",      CF_CHG1 | CF_USE2             }, //bitset            ($addr1), $imm                            
+{ "check9",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm                            
 { "bitclear",    CF_CHG1 | CF_USE2             }, //bitclear            ($addr1), $imm                            
 { "clrz",        0                             }, //clrz            $imm, $imm                                
 { "setz",        0                             }, //setz            $imm, $imm                                

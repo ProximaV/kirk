@@ -92,20 +92,30 @@ void out_kirk_t::out_insn(void)
         break;
         //($addr1), $data
         //($addr1), $imm
+    case KIRK_INSN_08_STORE2:
     case KIRK_INSN_09_STORE:
+    case KIRK_INSN_10_CMPX:
     case KIRK_INSN_11_CMPI:
     case KIRK_INSN_12_CMPPLUS:
     case KIRK_INSN_19_ADDI:
     case KIRK_INSN_21_ADDC:
     case KIRK_INSN_29_SUBI:
+    case KIRK_INSN_30_OP30:
+    case KIRK_INSN_38_OP38:
     case KIRK_INSN_39_ANDI:
     case KIRK_INSN_3A_ANDA:
+    case KIRK_INSN_41_MOV8:
     case KIRK_INSN_49_XORI:
+    case KIRK_INSN_89_OP89:
     case KIRK_INSN_90_LSH:
     case KIRK_INSN_98_NAND:
     case KIRK_INSN_A0_SETMODE:
     case KIRK_INSN_C0_TEST:
+    case KIRK_INSN_C3_CHECK3:
+    case KIRK_INSN_C6_CHECK6:
+    case KIRK_INSN_C7_CHECK7:
     case KIRK_INSN_C8_BITSET:
+    case KIRK_INSN_C9_CHECK9:
     case KIRK_INSN_D0_BITCLEAR:
         out_mnem();
         out_symbol('(');
@@ -116,7 +126,9 @@ void out_kirk_t::out_insn(void)
         out_one_operand(1);
         break;
         // ($addr1), ($addr1)
+    case KIRK_INSN_0A_MOVX:
     case KIRK_INSN_0B_MOV32:
+    case KIRK_INSN_0C_MOVY:
     case KIRK_INSN_0D_MOV32A:
     case KIRK_INSN_0E_MOV32AA:
     case KIRK_INSN_13_CMPA:
@@ -125,7 +137,9 @@ void out_kirk_t::out_insn(void)
     case KIRK_INSN_43_MOV16:
     case KIRK_INSN_44_ORA:
     case KIRK_INSN_4B_XORA:
+    case KIRK_INSN_4E_XORX:
     case KIRK_INSN_53_MOV128:
+    case KIRK_INSN_8B_OP8B:
         out_mnem();
         out_symbol('(');
         out_one_operand(0);
@@ -146,6 +160,8 @@ void out_kirk_t::out_insn(void)
         out_one_operand(1);
         break;
         //$branch
+    case KIRK_INSN_62_JZ:
+    case KIRK_INSN_68_JNZ:
     case KIRK_INSN_E0_B:
     case KIRK_INSN_E1_BNZ:
     case KIRK_INSN_E2_BZ:
@@ -160,6 +176,7 @@ void out_kirk_t::out_insn(void)
     case KIRK_INSN_DA_CLRZ:
     case KIRK_INSN_DB_SETZ:
     case KIRK_INSN_F0_RET:
+    case KIRK_INSN_00_NOP:
         out_mnem();
         break;
     default:
