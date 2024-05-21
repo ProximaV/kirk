@@ -139,6 +139,8 @@ ssize_t idaapi kirk_t::on_event(ssize_t msgid, va_list va)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+
+
 static const asm_t kirkasm =
 {
     ASH_HEXF3 | AS_COLON | ASB_BINF0 | ASO_OCTF1 | AS_NCMAS,
@@ -152,7 +154,7 @@ static const asm_t kirkasm =
     ";",           // comment string
     '"',           // string delimiter
     '\'',          // char delimiter (no char consts)
-    "\\\"'",       // special symbols in char and string constants
+    "'\"",         // special symbols in char and string constants
 
     ".ascii",      // ascii string directive
     ".byte",       // byte directive
@@ -160,37 +162,38 @@ static const asm_t kirkasm =
     ".dword",      // dword  (4 bytes)
     ".qword",      // qword  (8 bytes)
     NULL,          // oword  (16 bytes)
-    ".float"       // float  (4 bytes)
+    ".float",      // float  (4 bytes)
     ".double",     // double (8 bytes)
     NULL,          // tbyte  (10/12 bytes)
     NULL,          // packed decimal real
-    NULL,          // what??
     "#d dup(#v)",  // array keyword (#h,#d,#v,#s(...))
     ".block %s",   // uninited arrays
     ".equ",        // equ
     NULL,          // seg prefix
-    //  preline, NULL, operdim,
-    NULL, NULL, NULL,
-    NULL,
-    NULL,
-    NULL,          // func_header
-    NULL,          // func_footer
-    NULL,          // public
-    NULL,          // weak
-    NULL,          // extrn
-    NULL,          // comm
+    NULL,          // comment close
+    NULL,          // low 8 bits
+    NULL,          // high 8 bits
+    NULL,          // low 16 bits
+    NULL,          // high 16 bits
+    NULL,          // preline
+    NULL,          // start of bold text
+    NULL,          // start of normal text
+    NULL,          // start of literal text
+    NULL,          // end of comment
     NULL,          // get_type_name
     NULL,          // align
-    0, 0,          // lbrace, rbrace
-    NULL,          // mod
-    NULL,          // and
-    NULL,          // or
-    NULL,          // xor
-    NULL,          // not
-    NULL,          // shl
-    NULL,          // shr
-    NULL,          // sizeof
+    NULL,          // left brace
+    NULL,          // right brace
+    NULL,          // modulo operator
+    NULL,          // and operator
+    NULL,          // or operator
+    NULL,          // xor operator
+    NULL,          // not operator
+    NULL,          // shift left operator
+    NULL,          // shift right operator
+    NULL           // sizeof operator
 };
+
 
 //---------------------------------------------------------------------------------------------------------------------
 static const asm_t* const asms[] = { &kirkasm, NULL };
