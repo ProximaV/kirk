@@ -5,15 +5,15 @@
 
 typedef unsigned int INSN;
 
-int rambase = 0xE0000000;
+ea_t rambase = 0xE0000000;
 
 int f_opcode(INSN insn) { return (insn >> 24) & 0xFF; }
-int f_addr1(INSN insn) { return (((insn >> 12) & 0xFFF) << 2) | rambase; }
-int f_addr2(INSN insn) { return ((insn  & 0xFFF) << 2) | rambase; }
-int f_addr3(INSN insn) { return (insn << 2) | rambase; }
+ea_t f_addr1(INSN insn) { return (((insn >> 12) & 0xFFF) << 2) | rambase; }
+ea_t f_addr2(INSN insn) { return ((insn  & 0xFFF) << 2) | rambase; }
+ea_t f_addr3(INSN insn) { return (insn << 2) | rambase; }
 int f_imm1(INSN insn) { return (insn >> 12) & 0xFFF; }
 int f_imm2(INSN insn) { return insn & 0xFFF; }
-int f_branch(INSN insn) { return ((insn & 0xFFF) << 2); }
+ea_t f_branch(INSN insn) { return ((insn & 0xFFF) << 2); }
 
 /* Analyze the current instruction. */
 int kirk_t::kirk_ana(insn_t* _insn)
@@ -238,7 +238,7 @@ decode_insn_format_noops:
 decode_insn_format_addr_data:
     {
         
-        int addr1 = f_addr1(insn);
+        ea_t addr1 = f_addr1(insn);
 
         ida_insn.Op1.type = o_mem;
         ida_insn.Op1.kirk_type = KIRK_OPERAND_MEM;
@@ -261,8 +261,8 @@ decode_insn_format_addr_data:
     }
 decode_insn_format_addr:
     {
-        int addr1 = f_addr1(insn);
-        int addr2 = f_addr2(insn);
+        ea_t addr1 = f_addr1(insn);
+        ea_t addr2 = f_addr2(insn);
 
         ida_insn.Op1.type = o_mem;
         ida_insn.Op1.kirk_type = KIRK_OPERAND_MEM;
@@ -274,8 +274,8 @@ decode_insn_format_addr:
 
 decode_insn_format_addr_addr:
     {
-        int addr1 = f_addr1(insn);
-        int addr2 = f_addr2(insn);
+        ea_t addr1 = f_addr1(insn);
+        ea_t addr2 = f_addr2(insn);
 
         ida_insn.Op2.type = o_mem;
         ida_insn.Op2.kirk_type = KIRK_OPERAND_MEM;
@@ -289,7 +289,7 @@ decode_insn_format_addr_addr:
     }
 decode_insn_format_addr_imm:
     {
-        int addr1 = f_addr1(insn);
+        ea_t addr1 = f_addr1(insn);
         int imm2 = f_imm2(insn);
 
         ida_insn.Op1.type = o_mem;
@@ -319,7 +319,7 @@ decode_insn_format_imm_imm:
     }
 decode_insn_format_branch:
     {
-        int branch = f_branch(insn);
+        ea_t branch = f_branch(insn);
 
         ida_insn.Op1.type = o_near;
         ida_insn.Op1.kirk_type = KIRK_OPERAND_BRANCH;
