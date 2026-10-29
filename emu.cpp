@@ -69,8 +69,8 @@ int kirk_t::kirk_emu(const insn_t& insn)
     switch (insn.itype)
     {
     case KIRK_INSN_E0_B:
-    case KIRK_INSN_E1_BNZ:
-    case KIRK_INSN_E2_BZ:
+    case KIRK_INSN_E1_BF:
+    case KIRK_INSN_E2_BT:
     case KIRK_INSN_E3_BHI:
     case KIRK_INSN_E4_BLO:
     case KIRK_INSN_E8_CALL:

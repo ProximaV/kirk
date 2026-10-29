@@ -12,7 +12,9 @@ KIRK is controlled by a custom big-endian, registerless, memory-to-memory 32-bit
 
 * **`CODE` (`0x0000..0x3FFF`)**: Big-endian internal mask ROM. Instructions are 32-bit aligned and either **4 bytes** (single word) or **8 bytes** (instruction word followed by a 32-bit immediate). Branch and call targets encode 12-bit word addresses (`word_idx << 2`). Subroutine `call`/`ret` uses an internal hardware return-address stack.
 * **`DATA` (`0xE0000000..0xE000FFFF`)**: Unified memory-mapped I/O (MMIO) and scratchpad SRAM. Instruction address fields (`addr1` in bits `[23:12]`, `addr2` in bits `[11:0]`) encode 12-bit 32-bit-word offsets mapped to `0xE0000000 | (word_idx << 2)`. Firmware convention uses `0xE0003F00..0xE0003F3C` as 16 workspace word registers (`R0..R15`).
-* **Condition Flags**: Unsigned condition flags (`Z`, `C`) updated by arithmetic, bitwise, compare, and `btest`/`clrz`/`setz` instructions. For `btest (src), bit`, `Z` latches `(MEM[src] >> bit) & 1`.
+* **Condition Flags (`T`, `C`)**:
+  * **`T` (True / Equal flag, SuperH-style)**: Set to `1` when an ALU/compare/decrement result reaches zero (`dst == src` or `--dst == 0`), when `btst (src), bit` tests a `1` bit (`(MEM[src] >> bit) & 1 == 1`), or explicitly via `sett` (`0xDB`, cleared via `clrt` `0xDA`). Tested by `bt` (`T == 1`) and `bf` (`T == 0`).
+  * **`C` (Carry / Borrow flag)**: Unsigned carry/magnitude flag updated by `cmp`, `add`, `addc`, and `sub`, tested by unsigned magnitude branches `bhi` (`>`) and `blo` (`<`).
 
 ---
 
@@ -20,15 +22,16 @@ KIRK is controlled by a custom big-endian, registerless, memory-to-memory 32-bit
 
 * **Table-Driven Instruction Analysis (`ana.cpp`)**:
   * Decodes all 42 hardware-valid opcodes (37 ROM-attested silicon instructions plus 5 orthogonal Group-A addressing modes), with optical-decap bit-error ghost opcodes removed.
-  * Enforces 5-bit immediate validation (`(insn & 0xFE0) == 0`) on barrel-shift (`lsh`, `rsh`) and bit-manipulation (`btest`, `bitset`, `bitclear`) instructions to prevent false decoding of data words.
+  * Enforces 5-bit immediate validation (`(insn & 0xFE0) == 0`) on barrel-shift (`lsl`, `lsr`) and bit-manipulation (`btst`, `bset`, `bclr`) instructions to prevent false decoding of data words.
   * Recovers the known 1-bit decap shift on the reset vector at `0x0000` (`_reset` → `_start`).
-* **Direct, Indirect & Offset Operand Rendering (`out.cpp`)**:
-  * Direct word-addressed RAM/MMIO access: `(SYMBOL)` (`MEM[addr]`).
-  * Indirect RAM pointer dereference: `[(SYMBOL)]` (`MEM[MEM[addr]]`).
+* **Orthogonal Mnemonics & Operand Rendering (`ins.cpp`, `out.cpp`)**:
+  * Uses clean overloaded base mnemonics (`mov`, `cmp`, `add`, `addc`, `sub`, `and`, `or`, `xor`) for 32-bit word operations and `mov128` for 128-bit block transfers, with addressing modes expressed directly by operand syntax:
+    * Direct word-addressed RAM/MMIO access: `(SYMBOL)` (`MEM[addr]`).
+    * Indirect RAM pointer dereference: `[(SYMBOL)]` (`MEM[MEM[addr]]`).
   * Supports manual offset conversion (`refinfo_t`) on 32-bit immediate operands, resolving word-index pointers (`0xE0000000 | (imm32 << 2)`) into symbolic data references.
 * **Symbolic Hardware Accelerator & Bitfield Annotations (`out.cpp`, `reg.cpp`, `cfg/kirk.cfg`)**:
   * Annotates `wfe` (`0xF8`) 24-bit accelerator event masks (`DMA`, `HOST`, `ECC`, `SHA1`, `AES`, `PRNG`, `TRNG`, `MATH`), e.g. `wfe 0x100000 (TRNG)`.
-  * Annotates `btest`, `bitset`, and `bitclear` operands with named MMIO register bitfields from `cfg/kirk.cfg`, e.g. `btest (ECC_RESULT), 0 (ECC_VALID)` and `bitclear (AES_CMD), 1 (AES_INIT_IV)`.
+  * Annotates `btst`, `bset`, and `bclr` operands with named MMIO register bitfields from `cfg/kirk.cfg`, e.g. `btst (ECC_RESULT), 0 (ECC_VALID)` and `bclr (AES_CMD), 1 (AES_INIT_IV)`.
   * Automatically loads `kirk.cfg` port/bit metadata in memory (`IORESP_NONE`) when opening pre-existing `.i64` databases without overwriting user-defined symbols.
 * **Cross-Reference & Control-Flow Emulation (`emu.cpp`)**:
   * Creates typed data items (`dt_dword` and 16-byte `dt_byte16` for `mov128`) and read/write/offset data cross-references (`dr_R`, `dr_W`, `dr_O`), including pointer-read xrefs on indirect `[(addr)]` operands.
@@ -42,7 +45,7 @@ KIRK is controlled by a custom big-endian, registerless, memory-to-memory 32-bit
 
 Group A instructions share a 3-bit addressing mode in `opcode[2:0]`:
 
-| Mode | Length | Syntax | Semantics |
+| Mode | Length | Operand Syntax | Semantics |
 | :---: | :---: | :--- | :--- |
 | `1` | 8 B | `(addr1), imm32` | Direct destination, 32-bit immediate source |
 | `2` | 8 B | `[(addr1)], imm32` | Indirect destination `MEM[MEM[addr1]]`, 32-bit immediate source |
@@ -51,36 +54,36 @@ Group A instructions share a 3-bit addressing mode in `opcode[2:0]`:
 | `5` | 4 B | `(addr2), [(addr1)]` | Direct destination, indirect source |
 | `6` | 4 B | `[(addr2)], [(addr1)]` | Indirect destination, indirect source |
 
-| Opcode(s) | Mnemonics | Width | Description |
-| :--- | :--- | :---: | :--- |
-| `0x09..0x0E` | `store`, `storea`, `mov32`, `mov32ia`, `mov32a`, `mov32aa` | 32-bit | 32-bit immediate store and memory-to-memory move |
-| `0x11..0x13`, `0x16` | `cmpi`, `cmpia`, `cmpa`, `cmpaa` | 32-bit | Unsigned 32-bit compare (`dst - src`, updates `Z` and `C`) |
-| `0x19`, `0x1B` | `addi`, `adda` | 32-bit | 32-bit unsigned addition (`dst += src`, updates `Z` and `C`) |
-| `0x21` | `addc` | 32-bit | 32-bit unsigned add with carry (`dst += imm32 + C`) |
-| `0x29` | `subi` | 32-bit | 32-bit unsigned subtraction (`dst -= imm32`, updates `Z` and `C`) |
-| `0x39`, `0x3A` | `andi`, `andia` | 32-bit | Bitwise AND (`dst &= imm32`, updates `Z`) |
-| `0x41`, `0x43`, `0x44` | `ori`, `or`, `ora` | 32-bit | Bitwise OR (`dst \|= src`, updates `Z`) |
-| `0x49`, `0x4B`, `0x4E` | `xori`, `xora`, `xoraa` | 32-bit | Bitwise XOR (`dst ^= src`, updates `Z`) |
-| `0x53` | `mov128` | 128-bit | 16-byte (4-word) aligned block transfer `(addr2) <= (addr1)` |
+| Opcode(s) | Mnemonic | Width | Modes | Description |
+| :--- | :--- | :---: | :--- | :--- |
+| `0x09..0x0E` | `mov` | 32-bit | `1..6` | 32-bit immediate write and memory-to-memory move |
+| `0x11..0x13`, `0x16` | `cmp` | 32-bit | `1, 2, 3, 6` | Unsigned 32-bit compare (`T <= (dst == src)`, updates `C`) |
+| `0x19`, `0x1B` | `add` | 32-bit | `1, 3` | 32-bit unsigned addition (`dst += src`, updates `T` and `C`) |
+| `0x21` | `addc` | 32-bit | `1` | 32-bit unsigned add with carry (`dst += imm32 + C`) |
+| `0x29` | `sub` | 32-bit | `1` | 32-bit unsigned subtraction (`dst -= imm32`, updates `T` and `C`) |
+| `0x39`, `0x3A` | `and` | 32-bit | `1, 2` | Bitwise AND (`dst &= imm32`, updates `T`) |
+| `0x41`, `0x43`, `0x44` | `or` | 32-bit | `1, 3, 4` | Bitwise OR (`dst \|= src`, updates `T`) |
+| `0x49`, `0x4B`, `0x4E` | `xor` | 32-bit | `1, 3, 6` | Bitwise XOR (`dst ^= src`, updates `T`) |
+| `0x53` | `mov128` | 128-bit | `3` | 16-byte (4-word) aligned block transfer `(addr2) <= (addr1)` |
 
-### Group B & C — Unary, Shift, Bit, Control & Synchronization (`0x80..0xF8`)
+### Group B & C — Unary, Shift, Bit, I/O Strobe, Control & Synchronization (`0x80..0xF8`)
 
 | Opcode | Mnemonic | Length | Operands | Description |
 | :---: | :--- | :---: | :--- | :--- |
-| `0x80` | `inc32` | 4 B | `(dst)` | Increment 32-bit word (`MEM[dst] += 1`) |
-| `0x88` | `dec32` | 4 B | `(dst)` | Decrement 32-bit word (`MEM[dst] -= 1`) |
-| `0x90` | `lsh` | 4 B | `(dst), shift5` | 32-bit logical shift left by `0..31` |
-| `0x98` | `rsh` | 4 B | `(dst), shift5` | 32-bit logical shift right by `0..31` |
-| `0xA0` | `setmode` | 4 B | `(ctrl), imm12` | Write 12-bit command/strobe to hardware accelerator control port |
-| `0xB0` | `byteswap` | 4 B | `(dst)` | In-place 32-bit endian byte swap (`bswap32`) |
-| `0xC0` | `btest` | 4 B | `(src), bit5` | Test bit `0..31` (`Z <= (MEM[src] >> bit5) & 1`) |
-| `0xC8` | `bitset` | 4 B | `(dst), bit5` | Set bit `0..31` (`MEM[dst] \|= (1u << bit5)`) |
-| `0xD0` | `bitclear` | 4 B | `(dst), bit5` | Clear bit `0..31` (`MEM[dst] &= ~(1u << bit5)`) |
-| `0xDA` | `clrz` | 4 B | — | Clear zero flag (`Z <= 0`) |
-| `0xDB` | `setz` | 4 B | — | Set zero flag (`Z <= 1`) |
+| `0x80` | `inc` | 4 B | `(dst)` | Increment 32-bit word (`MEM[dst] += 1`, updates `T`) |
+| `0x88` | `dec` | 4 B | `(dst)` | Decrement 32-bit word (`MEM[dst] -= 1`, `T <= (result == 0)`) |
+| `0x90` | `lsl` | 4 B | `(dst), shift5` | 32-bit logical shift left by `0..31` (zero-fill) |
+| `0x98` | `lsr` | 4 B | `(dst), shift5` | 32-bit logical shift right by `0..31` (zero-fill) |
+| `0xA0` | `iocmd` | 4 B | `(ctrl), imm12` | Strobe hardware accelerator control port with 12-bit command code |
+| `0xB0` | `bswap` | 4 B | `(dst)` | In-place 32-bit endian byte swap (`bswap32`) |
+| `0xC0` | `btst` | 4 B | `(src), bit5` | Test bit `0..31` (`T <= (MEM[src] >> bit5) & 1`) |
+| `0xC8` | `bset` | 4 B | `(dst), bit5` | Set bit `0..31` (`MEM[dst] \|= (1u << bit5)`) |
+| `0xD0` | `bclr` | 4 B | `(dst), bit5` | Clear bit `0..31` (`MEM[dst] &= ~(1u << bit5)`) |
+| `0xDA` | `clrt` | 4 B | — | Clear condition flag (`T <= 0`) |
+| `0xDB` | `sett` | 4 B | — | Set condition flag (`T <= 1`) |
 | `0xE0` | `b` | 4 B | `target` | Unconditional branch to `target` |
-| `0xE1` | `bnz` | 4 B | `target` | Branch if `Z == 0` (not equal / tested bit clear) |
-| `0xE2` | `bz` | 4 B | `target` | Branch if `Z == 1` (equal / tested bit set) |
+| `0xE1` | `bf` | 4 B | `target` | Branch if False (`T == 0`: not equal / tested bit clear) |
+| `0xE2` | `bt` | 4 B | `target` | Branch if True (`T == 1`: equal / tested bit set) |
 | `0xE3` | `bhi` | 4 B | `target` | Branch if unsigned higher (`>`) |
 | `0xE4` | `blo` | 4 B | `target` | Branch if unsigned lower (`<`) |
 | `0xE8` | `call` | 4 B | `target` | Push `PC + 4` onto hardware return stack and jump to `target` |

@@ -42,73 +42,73 @@ struct kirk_opcode_desc_t
 static const kirk_opcode_desc_t OpcodeTable[] =
 {
     // 0x09..0x0E: 32-bit Move family (top = 0x01, mode = 1..6)
-    { 0x09, KIRK_INSN_09_STORE,    FMT_ADDR_DATA,   dt_dword  },
-    { 0x0A, KIRK_INSN_0A_STOREA,   FMT_IND_DATA,    dt_dword  },
-    { 0x0B, KIRK_INSN_0B_MOV32,    FMT_ADDR_ADDR,   dt_dword  },
-    { 0x0C, KIRK_INSN_0C_MOV32IA,  FMT_IND_ADDR,    dt_dword  },
-    { 0x0D, KIRK_INSN_0D_MOV32A,   FMT_ADDR_IND,    dt_dword  },
-    { 0x0E, KIRK_INSN_0E_MOV32AA,  FMT_IND_IND,     dt_dword  },
+    { 0x09, KIRK_INSN_09_MOV_DI,   FMT_ADDR_DATA,   dt_dword  },
+    { 0x0A, KIRK_INSN_0A_MOV_PI,   FMT_IND_DATA,    dt_dword  },
+    { 0x0B, KIRK_INSN_0B_MOV_DD,   FMT_ADDR_ADDR,   dt_dword  },
+    { 0x0C, KIRK_INSN_0C_MOV_PD,   FMT_IND_ADDR,    dt_dword  },
+    { 0x0D, KIRK_INSN_0D_MOV_DP,   FMT_ADDR_IND,    dt_dword  },
+    { 0x0E, KIRK_INSN_0E_MOV_PP,   FMT_IND_IND,     dt_dword  },
 
     // 0x11..0x16: 32-bit Compare family (top = 0x02, mode = 1..3, 6)
-    { 0x11, KIRK_INSN_11_CMPI,     FMT_ADDR_DATA,   dt_dword  },
-    { 0x12, KIRK_INSN_12_CMPIA,    FMT_IND_DATA,    dt_dword  },
-    { 0x13, KIRK_INSN_13_CMPA,     FMT_ADDR_ADDR,   dt_dword  },
-    { 0x16, KIRK_INSN_16_CMPAA,    FMT_IND_IND,     dt_dword  },
+    { 0x11, KIRK_INSN_11_CMP_DI,   FMT_ADDR_DATA,   dt_dword  },
+    { 0x12, KIRK_INSN_12_CMP_PI,   FMT_IND_DATA,    dt_dword  },
+    { 0x13, KIRK_INSN_13_CMP_DD,   FMT_ADDR_ADDR,   dt_dword  },
+    { 0x16, KIRK_INSN_16_CMP_PP,   FMT_IND_IND,     dt_dword  },
 
     // 0x19..0x1B: 32-bit Add family (top = 0x03, mode = 1, 3)
-    { 0x19, KIRK_INSN_19_ADDI,     FMT_ADDR_DATA,   dt_dword  },
-    { 0x1B, KIRK_INSN_1B_ADDA,     FMT_ADDR_ADDR,   dt_dword  },
+    { 0x19, KIRK_INSN_19_ADD_DI,   FMT_ADDR_DATA,   dt_dword  },
+    { 0x1B, KIRK_INSN_1B_ADD_DD,   FMT_ADDR_ADDR,   dt_dword  },
 
     // 0x21: 32-bit Add with Carry (top = 0x04, mode = 1)
-    { 0x21, KIRK_INSN_21_ADDC,     FMT_ADDR_DATA,   dt_dword  },
+    { 0x21, KIRK_INSN_21_ADDC_DI,  FMT_ADDR_DATA,   dt_dword  },
 
     // 0x29: 32-bit Subtract (top = 0x05, mode = 1)
-    { 0x29, KIRK_INSN_29_SUBI,     FMT_ADDR_DATA,   dt_dword  },
+    { 0x29, KIRK_INSN_29_SUB_DI,   FMT_ADDR_DATA,   dt_dword  },
 
     // 0x39..0x3A: 32-bit Bitwise AND family (top = 0x07, mode = 1, 2)
-    { 0x39, KIRK_INSN_39_ANDI,     FMT_ADDR_DATA,   dt_dword  },
-    { 0x3A, KIRK_INSN_3A_ANDIA,    FMT_IND_DATA,    dt_dword  },
+    { 0x39, KIRK_INSN_39_AND_DI,   FMT_ADDR_DATA,   dt_dword  },
+    { 0x3A, KIRK_INSN_3A_AND_PI,   FMT_IND_DATA,    dt_dword  },
 
     // 0x41..0x44: 32-bit Bitwise OR family (top = 0x08, mode = 1, 3, 4)
-    { 0x41, KIRK_INSN_41_ORI,      FMT_ADDR_DATA,   dt_dword  },
-    { 0x43, KIRK_INSN_43_OR,       FMT_ADDR_ADDR,   dt_dword  },
-    { 0x44, KIRK_INSN_44_ORA,      FMT_IND_ADDR,    dt_dword  },
+    { 0x41, KIRK_INSN_41_OR_DI,    FMT_ADDR_DATA,   dt_dword  },
+    { 0x43, KIRK_INSN_43_OR_DD,    FMT_ADDR_ADDR,   dt_dword  },
+    { 0x44, KIRK_INSN_44_OR_PD,    FMT_IND_ADDR,    dt_dword  },
 
     // 0x49..0x4E: 32-bit Bitwise XOR family (top = 0x09, mode = 1, 3, 6)
-    { 0x49, KIRK_INSN_49_XORI,     FMT_ADDR_DATA,   dt_dword  },
-    { 0x4B, KIRK_INSN_4B_XORA,     FMT_ADDR_ADDR,   dt_dword  },
-    { 0x4E, KIRK_INSN_4E_XORAA,    FMT_IND_IND,     dt_dword  },
+    { 0x49, KIRK_INSN_49_XOR_DI,   FMT_ADDR_DATA,   dt_dword  },
+    { 0x4B, KIRK_INSN_4B_XOR_DD,   FMT_ADDR_ADDR,   dt_dword  },
+    { 0x4E, KIRK_INSN_4E_XOR_PP,   FMT_IND_IND,     dt_dword  },
 
     // 0x53: 128-bit (16-byte) Block Move (top = 0x0A, mode = 3)
     { 0x53, KIRK_INSN_53_MOV128,   FMT_ADDR_ADDR,   dt_byte16 },
 
     // 0x80, 0x88: 32-bit Increment / Decrement (top = 0x10, 0x11)
-    { 0x80, KIRK_INSN_80_INC32,    FMT_ADDR,        dt_dword  },
-    { 0x88, KIRK_INSN_88_DEC32,    FMT_ADDR,        dt_dword  },
+    { 0x80, KIRK_INSN_80_INC,      FMT_ADDR,        dt_dword  },
+    { 0x88, KIRK_INSN_88_DEC,      FMT_ADDR,        dt_dword  },
 
     // 0x90, 0x98: Logical Shifts (top = 0x12, 0x13)
-    { 0x90, KIRK_INSN_90_LSH,      FMT_ADDR_SHIFT5, dt_dword  },
-    { 0x98, KIRK_INSN_98_RSH,      FMT_ADDR_SHIFT5, dt_dword  },
+    { 0x90, KIRK_INSN_90_LSL,      FMT_ADDR_SHIFT5, dt_dword  },
+    { 0x98, KIRK_INSN_98_LSR,      FMT_ADDR_SHIFT5, dt_dword  },
 
-    // 0xA0: Hardware Unit Mode / Strobe (top = 0x14)
-    { 0xA0, KIRK_INSN_A0_SETMODE,  FMT_ADDR_IMM12,  dt_dword  },
+    // 0xA0: Hardware Accelerator Control-Port Strobe (top = 0x14)
+    { 0xA0, KIRK_INSN_A0_IOCMD,    FMT_ADDR_IMM12,  dt_dword  },
 
     // 0xB0: 32-bit Endian Byte Swap (top = 0x16)
-    { 0xB0, KIRK_INSN_B0_BYTESWAP, FMT_ADDR,        dt_dword  },
+    { 0xB0, KIRK_INSN_B0_BSWAP,    FMT_ADDR,        dt_dword  },
 
     // 0xC0, 0xC8, 0xD0: Bit Test / Set / Clear (top = 0x18..0x1A)
-    { 0xC0, KIRK_INSN_C0_BTEST,    FMT_ADDR_BIT5,   dt_dword  },
-    { 0xC8, KIRK_INSN_C8_BITSET,   FMT_ADDR_BIT5,   dt_dword  },
-    { 0xD0, KIRK_INSN_D0_BITCLEAR, FMT_ADDR_BIT5,   dt_dword  },
+    { 0xC0, KIRK_INSN_C0_BTST,     FMT_ADDR_BIT5,   dt_dword  },
+    { 0xC8, KIRK_INSN_C8_BSET,     FMT_ADDR_BIT5,   dt_dword  },
+    { 0xD0, KIRK_INSN_D0_BCLR,     FMT_ADDR_BIT5,   dt_dword  },
 
-    // 0xDA..0xDB: Zero Flag Clear / Set (top = 0x1B)
-    { 0xDA, KIRK_INSN_DA_CLRZ,     FMT_NOOPS,       dt_dword  },
-    { 0xDB, KIRK_INSN_DB_SETZ,     FMT_NOOPS,       dt_dword  },
+    // 0xDA..0xDB: Condition Flag Clear / Set (top = 0x1B)
+    { 0xDA, KIRK_INSN_DA_CLRT,     FMT_NOOPS,       dt_dword  },
+    { 0xDB, KIRK_INSN_DB_SETT,     FMT_NOOPS,       dt_dword  },
 
     // 0xE0..0xE4: Unsigned Conditional & Unconditional Branches (top = 0x1C, cond = 0..4)
     { 0xE0, KIRK_INSN_E0_B,        FMT_BRANCH,      dt_code   },
-    { 0xE1, KIRK_INSN_E1_BNZ,      FMT_BRANCH,      dt_code   },
-    { 0xE2, KIRK_INSN_E2_BZ,       FMT_BRANCH,      dt_code   },
+    { 0xE1, KIRK_INSN_E1_BF,       FMT_BRANCH,      dt_code   },
+    { 0xE2, KIRK_INSN_E2_BT,       FMT_BRANCH,      dt_code   },
     { 0xE3, KIRK_INSN_E3_BHI,      FMT_BRANCH,      dt_code   },
     { 0xE4, KIRK_INSN_E4_BLO,      FMT_BRANCH,      dt_code   },
 
