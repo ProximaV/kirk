@@ -33,7 +33,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{c13f3d91-11eb-446d-b8a8-bdce639742ae}</ProjectGuid>
-    <RootNamespace>mep</RootNamespace>
+    <RootNamespace>kirk</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -107,23 +107,25 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;__NT__;__IDP__;__X64__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;__NT__;__IDP__;__X64__;__EA64__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\..\..\include;$(COMMON_PATH)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories Condition="Exists('..\..\..\lib\x64_win_vc_32_pro')">..\..\..\lib\x64_win_vc_32_pro</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_32_pro')">..\..\..\lib\x64_win_vc_32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_32_pro') And Exists('..\..\..\lib\x64_win_vc_32')">..\..\..\lib\x64_win_vc_32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_32_pro') And !Exists('..\..\..\lib\x64_win_vc_32')">..\..\..\lib\x64_win_64</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ida.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /b /y "$(TargetDir)$(TargetFileName) " "%APPDATA%\Hex-Rays\IDA Pro\procs"</Command>
+      <Command>copy /b /y "$(TargetDir)$(TargetFileName)" "%APPDATA%\Hex-Rays\IDA Pro\procs" &amp;&amp; copy /b /y "$(ProjectDir)..\cfg\kirk.cfg" "%APPDATA%\Hex-Rays\IDA Pro\cfg\kirk.cfg"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">
@@ -136,17 +138,19 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\..\..\include;$(COMMON_PATH)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories Condition="Exists('..\..\..\lib\x64_win_vc_64_pro')">..\..\..\lib\x64_win_vc_64_pro</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_64_pro')">..\..\..\lib\x64_win_vc_64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_64_pro') And Exists('..\..\..\lib\x64_win_vc_64')">..\..\..\lib\x64_win_vc_64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_64_pro') And !Exists('..\..\..\lib\x64_win_vc_64')">..\..\..\lib\x64_win_64</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ida.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /b /y "$(TargetDir)$(TargetFileName) " "%APPDATA%\Hex-Rays\IDA Pro\procs"</Command>
+      <Command>copy /b /y "$(TargetDir)$(TargetFileName)" "%APPDATA%\Hex-Rays\IDA Pro\procs" &amp;&amp; copy /b /y "$(ProjectDir)..\cfg\kirk.cfg" "%APPDATA%\Hex-Rays\IDA Pro\cfg\kirk.cfg"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,12 +159,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;__NT__;__IDP__;__X64__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;__NT__;__IDP__;__X64__;__EA64__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\..\..\include;$(COMMON_PATH)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -169,11 +174,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories Condition="Exists('..\..\..\lib\x64_win_vc_32_pro')">..\..\..\lib\x64_win_vc_32_pro</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_32_pro')">..\..\..\lib\x64_win_vc_32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_32_pro') And Exists('..\..\..\lib\x64_win_vc_32')">..\..\..\lib\x64_win_vc_32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_32_pro') And !Exists('..\..\..\lib\x64_win_vc_32')">..\..\..\lib\x64_win_64</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ida.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /b /y "$(TargetDir)$(TargetFileName) " "%APPDATA%\Hex-Rays\IDA Pro\procs"</Command>
+      <Command>copy /b /y "$(TargetDir)$(TargetFileName)" "%APPDATA%\Hex-Rays\IDA Pro\procs" &amp;&amp; copy /b /y "$(ProjectDir)..\cfg\kirk.cfg" "%APPDATA%\Hex-Rays\IDA Pro\cfg\kirk.cfg"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
@@ -188,6 +194,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\..\..\include;$(COMMON_PATH)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -196,11 +203,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories Condition="Exists('..\..\..\lib\x64_win_vc_64_pro')">..\..\..\lib\x64_win_vc_64_pro</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_64_pro')">..\..\..\lib\x64_win_vc_64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_64_pro') And Exists('..\..\..\lib\x64_win_vc_64')">..\..\..\lib\x64_win_vc_64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="!Exists('..\..\..\lib\x64_win_vc_64_pro') And !Exists('..\..\..\lib\x64_win_vc_64')">..\..\..\lib\x64_win_64</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ida.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /b /y "$(TargetDir)$(TargetFileName) " "%APPDATA%\Hex-Rays\IDA Pro\procs"</Command>
+      <Command>copy /b /y "$(TargetDir)$(TargetFileName)" "%APPDATA%\Hex-Rays\IDA Pro\procs" &amp;&amp; copy /b /y "$(ProjectDir)..\cfg\kirk.cfg" "%APPDATA%\Hex-Rays\IDA Pro\cfg\kirk.cfg"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

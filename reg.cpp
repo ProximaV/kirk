@@ -7,31 +7,22 @@
 int data_id;
 
 //---------------------------------------------------------------------------------------------------------------------
-static bool idaapi can_have_type(const op_t& x) // returns 1 - operand can have
+static bool idaapi can_have_type(const op_t& x)
 {
     switch (x.type)
     {
     case o_void:
     case o_reg:
     case o_near:
-        return 0;
-        //case o_phrase: can have type because of ASI or 0 struct offsets
+        return false;
+    default:
+        return true;
     }
-
-    return 1;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-ssize_t idaapi idb_listener_t::on_event(ssize_t code, va_list)
+ssize_t idaapi idb_listener_t::on_event(ssize_t, va_list)
 {
-    /*
-    switch (code)
-    {
-        // add stuff here...
-        default: break;
-    }
-    */
-
     return 0;
 }
 
@@ -39,21 +30,41 @@ ssize_t idaapi idb_listener_t::on_event(ssize_t code, va_list)
 // This old-style callback only returns the processor module object.
 static ssize_t idaapi notify(void*, int msgid, va_list)
 {
-    if (msgid == processor_t::ev_get_procmod) return size_t(SET_MODULE_DATA(kirk_t));
+    if (msgid == processor_t::ev_get_procmod)
+        return size_t(SET_MODULE_DATA(kirk_t));
 
     return 0;
 }
 
 void kirk_t::load_from_idb()
 {
-    ioh.restore_device();
+    ioh.restore_device(IORESP_NONE);
+    if (ioh.ports.empty() && ioh.device.empty())
+    {
+        ioh.device = "KIRK";
+        ioh.apply_config_file(IORESP_NONE);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-bool kirk_t::kirk_find_ioport_bit(outctx_t& ctx, int port, int bit)
+const char* kirk_t::find_ioport_bit_name(ea_t port, size_t bit) const
 {
     const ioport_bit_t* b = find_ioport_bit(ioh.ports, port, bit);
-    if (b != nullptr && !b->name.empty()) ctx.out_line(b->name.c_str(), COLOR_IMPNAME); return true;
+    if (b != nullptr && !b->name.empty())
+        return b->name.c_str();
+
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool kirk_t::kirk_find_ioport_bit(outctx_t& ctx, ea_t port, size_t bit)
+{
+    const char* name = find_ioport_bit_name(port, bit);
+    if (name != nullptr)
+    {
+        ctx.out_line(name, COLOR_IMPNAME);
+        return true;
+    }
 
     return false;
 }
@@ -68,11 +79,11 @@ ssize_t idaapi kirk_t::on_event(ssize_t msgid, va_list va)
     case processor_t::ev_newfile:
     {
         char cfgfile[QMAXFILE];
-        //warning("In newfile");
         ioh.get_cfg_filename(cfgfile, sizeof(cfgfile));
         iohandler_t::parse_area_line0_t cb(ioh);
         if (choose_ioport_device2(&ioh.device, cfgfile, &cb))
             ioh.set_device_name(ioh.device.c_str(), IORESP_ALL);
+        break;
     }
     case processor_t::ev_ending_undo:
     case processor_t::ev_oldfile:
@@ -89,7 +100,7 @@ ssize_t idaapi kirk_t::on_event(ssize_t msgid, va_list va)
     case processor_t::ev_init:
     {
         hook_event_listener(HT_IDB, &idb_listener, &LPH);
-        // Set a big endian mode of the IDA kernel
+        // Set big-endian mode of the IDA kernel
         inf_set_be(true);
         helper.create(PROCMOD_NODE_NAME);
         break;
@@ -101,7 +112,6 @@ ssize_t idaapi kirk_t::on_event(ssize_t msgid, va_list va)
         clr_module_data(data_id);
         break;
     }
-
     case processor_t::ev_ana_insn:
     {
         insn_t* out = va_arg(va, insn_t*);
@@ -129,18 +139,14 @@ ssize_t idaapi kirk_t::on_event(ssize_t msgid, va_list va)
         const op_t* op = va_arg(va, const op_t*);
         return can_have_type(*op) ? 1 : -1;
     }
-
     default:
         break;
     }
-    va_end(va);
 
     return code;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-
-
 static const asm_t kirkasm =
 {
     ASH_HEXF3 | AS_COLON | ASB_BINF0 | ASO_OCTF1 | AS_NCMAS,
@@ -161,7 +167,7 @@ static const asm_t kirkasm =
     ".word",       // word directive
     ".dword",      // dword  (4 bytes)
     ".qword",      // qword  (8 bytes)
-    NULL,          // oword  (16 bytes)
+    ".oword",      // oword  (16 bytes)
     ".float",      // float  (4 bytes)
     ".double",     // double (8 bytes)
     NULL,          // tbyte  (10/12 bytes)
@@ -194,13 +200,11 @@ static const asm_t kirkasm =
     NULL           // sizeof operator
 };
 
-
 //---------------------------------------------------------------------------------------------------------------------
 static const asm_t* const asms[] = { &kirkasm, NULL };
 
 //---------------------------------------------------------------------------------------------------------------------
 static const uchar retcode_1[] = { 0xF0, 0x00, 0x00, 0x00 };
-
 
 //---------------------------------------------------------------------------------------------------------------------
 static const bytes_t retcodes[] =
@@ -214,26 +218,16 @@ static const bytes_t retcodes[] =
 static const char* const shnames[] = { "KIRK", NULL };
 static const char* const lnames[] = { FAMILY"KIRK big endian", NULL };
 
-//---------------------------------------------------------------------------------------------------------------------
-
 //-----------------------------------------------------------------------
 //      Processor Definition
 //-----------------------------------------------------------------------
 
-#define PLFM_KIRK 0x8000 +0x1701
+#define PLFM_KIRK (0x8000 + 0x1701)
+
 static const char* const RegNames[] =
 {
-    "r0",
-    "r1",
-    "r2",
-    "r3",
-    "r4",
-    "gp",
-    "fp",
-    "sp",
-    "ra",
-    "ea",
-    "ba",
+    "cs",
+    "ds",
 };
 
 processor_t LPH =
@@ -241,9 +235,9 @@ processor_t LPH =
     IDP_INTERFACE_VERSION,   // version
     PLFM_KIRK,               // id
     // flag
-    PR_USE32|PR_DEFSEG32|PRN_HEX|PR_RNAMESOK|PR_ALIGN,  
+    PR_USE32 | PR_DEFSEG32 | PRN_HEX | PR_RNAMESOK | PR_ALIGN,
 
-    0,                       // the module has processor-specific configuration options
+    0,                       // flag2
     8,                       // 8 bits in a byte for code segments
     8,                       // 8 bits in a byte for other segments
 
@@ -257,24 +251,19 @@ processor_t LPH =
     RegNames,
     qnumber(RegNames),       // number of registers
 
-    qnumber(RegNames) - 2,     // first
-    qnumber(RegNames) - 1,     // last
+    0,                       // first segment register
+    1,                       // last segment register
     0,                       // size of a segment register
-    qnumber(RegNames) - 2,     // virtual CS
-    qnumber(RegNames) - 1,     // virtual DS
+    0,                       // virtual CS
+    1,                       // virtual DS
 
     NULL,                    // no known code start sequences
     retcodes,                // 'Return' instruction codes
 
-    0,                       // 
-    KIRK_INSN_F8_INTR + 1,         // 
+    0,                       // first instruction
+    KIRK_INSN_LAST,          // last instruction
     Instructions,            // instruc
     0,                       // int tbyte_size;  -- doesn't exist
     { 0, 0, 0, 0 },          // char real_width[4];
-    // number of symbols after decimal point
-    // 2byte float (0-does not exist)
-    // normal float
-    // normal double
-    // long double
-    KIRK_INSN_F0_RET,           // icode of return instruction. It is ok to give any of possible return instructions
+    KIRK_INSN_F0_RET,        // icode of return instruction
 };

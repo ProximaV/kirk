@@ -2,66 +2,53 @@
 */
 
 #include "kirk.hpp"
+
 instruc_t Instructions[] =
 {
-
-{ "",            0                             }, //unknown                                                   
-{ "--invalid--", 0                             }, //--invalid--                                               
-{ "nop",      0                                }, //Nop            
-{ "store2",      CF_CHG1 | CF_USE2             }, //store2            ($addr1),$data         
-{ "store",       CF_CHG1 | CF_USE2             }, //store             ($addr1),$data                          
-{ "movX",       CF_CHG1 | CF_USE2             }, //movx            ($addr1), ($addr1)                        
-{ "mov32",       CF_CHG1 | CF_USE2             }, //mov32            ($addr1), ($addr1)                        
-{ "movY",       CF_CHG1 | CF_USE2             }, //movY            ($addr1), ($addr1)                        
-{ "mov32a",      CF_CHG1 | CF_USE2             }, //op0D            ($addr1), ($addr1)                        
-{ "mov32aa",     CF_CHG1 | CF_USE2             }, //op0E            ($addr1), ($addr1)                        
-{ "cmpX",        CF_USE1 | CF_USE2             }, //cmpX            ($addr1),$data                             
-{ "cmpi",        CF_USE1 | CF_USE2             }, //cmp            ($addr1),$data                             
-{ "cmp+",        CF_USE1 | CF_USE2             }, //cmp+          ($addr1),$data                              
-{ "cmpa",        CF_CHG1 | CF_USE2             }, //op13            ($addr1), ($addr1)                        
-{ "suba",        CF_CHG1 | CF_USE2             }, //suba            ($addr1), ($addr1)                        
-{ "addi",        CF_CHG1 | CF_USE2             }, //addi             ($addr1),$data                           
-{ "adda",        CF_CHG1 | CF_USE2             }, //adda            ($addr1), ($addr1)                        
-{ "addc",        CF_CHG1                       }, //addc            ($addr1)                            
-{ "subi",        CF_CHG1 | CF_USE2             }, //subi             ($addr1),$data                           
-{ "op30",        CF_CHG1 | CF_USE2             }, //subi             ($addr1),$data                           
-{ "op38",        CF_CHG1 | CF_USE2             }, //subi             ($addr1),$data                           
-{ "andi",        CF_CHG1 | CF_USE2             }, //andi             ($addr1),$data                           
-{ "anda",        CF_CHG1 | CF_USE2             }, //andiu             ($addr1),$data                            
-{ "mov8",       CF_CHG1 | CF_USE2             }, //mov16           ($addr1), ($addr1)                         
-{ "mov16",       CF_CHG1 | CF_USE2             }, //mov16           ($addr1), ($addr1)                         
-{ "ora",         CF_CHG1 | CF_USE2             }, //ora           ($addr1), ($addr1)                         
-{ "xori",        CF_CHG1 | CF_USE2             }, //xori             ($addr1),$data                           
-{ "xora",        CF_CHG1 | CF_USE2             }, //xora            ($addr1), ($addr1)                        
-{ "xorx",        CF_CHG1 | CF_USE2             }, //xora            ($addr1), ($addr1)  
-{ "mov128",      CF_CHG1 | CF_USE2             }, //mov128            ($addr1), ($addr1) 
-{ "jz",          CF_USE1                       }, //beq $addr
-{ "jnz",          CF_USE1                       }, //beq $addr
-{ "inc32",       CF_CHG1                       }, //inc32            ($addr1), $imm                            
-{ "dec32",       CF_CHG1                       }, //dec32            ($addr1), $imm                            
-{ "op89",         CF_SHFT | CF_CHG1 | CF_USE2   }, //lsh            ($addr1), $imm                            
-{ "op8B",         CF_SHFT | CF_CHG1 | CF_USE2   }, //lsh            ($addr1), $imm                            
-{ "lsh",         CF_SHFT | CF_CHG1 | CF_USE2   }, //lsh            ($addr1), $imm                            
-{ "rsh",         CF_SHFT | CF_CHG1 | CF_USE2   }, //rsh            ($addr1), $imm                            
-{ "setmode",     CF_CHG1 | CF_USE2             }, //setmode            ($addr1), $imm                            
-{ "byteswap",    CF_CHG1 | CF_USE2             }, //byteswap            ($addr1), $imm                            
-{ "test",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm                            
-{ "check3",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm                            
-{ "check6",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm                            
-{ "check7",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm   
-{ "bitset",      CF_CHG1 | CF_USE2             }, //bitset            ($addr1), $imm                            
-{ "check9",        CF_CHG1 | CF_USE2             }, //test            ($addr1), $imm                            
-{ "bitclear",    CF_CHG1 | CF_USE2             }, //bitclear            ($addr1), $imm                            
-{ "clrz",        0                             }, //clrz            $imm, $imm                                
-{ "setz",        0                             }, //setz            $imm, $imm                                
-{ "b",           CF_USE1 | CF_STOP | CF_JUMP   }, //bra $branch                                               
-{ "bnz",         CF_USE1                       }, //bne $addr                                                 
-{ "bz",          CF_USE1                       }, //beq $addr                                                 
-{ "bgt",         CF_USE1                       }, //bgt $addr                                                 
-{ "blt",         CF_USE1                       }, //blt $addr                                                 
-{ "call",        CF_USE1 | CF_CALL             }, //call $addr                                                
-{ "call2",       CF_USE1 | CF_CALL             }, //call2 $addr - this is a dara error only - E8 is the real instruction                                               
-{ "ret",         CF_STOP                       }, //ret
-{ "intr",        CF_USE1 | CF_USE2             }, // intr            $imm, $imm                                
-                                                                                                             
+    { "",            0                                      }, // 00: unknown
+    { "--invalid--", 0                                      }, // 01: --invalid--
+    { "store",       CF_CHG1 | CF_USE2                      }, // 0x09: store       (dst), imm32
+    { "storea",      CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x0A: storea      [(dst)], imm32
+    { "mov32",       CF_CHG1 | CF_USE2                      }, // 0x0B: mov32       (dst), (src)
+    { "mov32ia",     CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x0C: mov32ia     [(dst)], (src)
+    { "mov32a",      CF_CHG1 | CF_USE2                      }, // 0x0D: mov32a      (dst), [(src)]
+    { "mov32aa",     CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x0E: mov32aa     [(dst)], [(src)]
+    { "cmpi",        CF_USE1 | CF_USE2                      }, // 0x11: cmpi        (dst), imm32
+    { "cmpia",       CF_USE1 | CF_USE2                      }, // 0x12: cmpia       [(dst)], imm32
+    { "cmpa",        CF_USE1 | CF_USE2                      }, // 0x13: cmpa        (dst), (src)
+    { "cmpaa",       CF_USE1 | CF_USE2                      }, // 0x16: cmpaa       [(dst)], [(src)]
+    { "addi",        CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x19: addi        (dst), imm32
+    { "adda",        CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x1B: adda        (dst), (src)
+    { "addc",        CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x21: addc        (dst), imm32
+    { "subi",        CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x29: subi        (dst), imm32
+    { "andi",        CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x39: andi        (dst), imm32
+    { "andia",       CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x3A: andia       [(dst)], imm32
+    { "ori",         CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x41: ori         (dst), imm32
+    { "or",          CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x43: or          (dst), (src)
+    { "ora",         CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x44: ora         [(dst)], (src)
+    { "xori",        CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x49: xori        (dst), imm32
+    { "xora",        CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x4B: xora        (dst), (src)
+    { "xoraa",       CF_CHG1 | CF_USE1 | CF_USE2            }, // 0x4E: xoraa       [(dst)], [(src)]
+    { "mov128",      CF_CHG1 | CF_USE2                      }, // 0x53: mov128      (dst), (src)
+    { "inc32",       CF_CHG1 | CF_USE1                      }, // 0x80: inc32       (dst)
+    { "dec32",       CF_CHG1 | CF_USE1                      }, // 0x88: dec32       (dst)
+    { "lsh",         CF_SHFT | CF_CHG1 | CF_USE1 | CF_USE2  }, // 0x90: lsh         (dst), shift5
+    { "rsh",         CF_SHFT | CF_CHG1 | CF_USE1 | CF_USE2  }, // 0x98: rsh         (dst), shift5
+    { "setmode",     CF_CHG1 | CF_USE2                      }, // 0xA0: setmode     (dst), imm12
+    { "byteswap",    CF_CHG1 | CF_USE1                      }, // 0xB0: byteswap    (dst)
+    { "btest",       CF_USE1 | CF_USE2                      }, // 0xC0: btest       (src), bit5
+    { "bitset",      CF_CHG1 | CF_USE1 | CF_USE2            }, // 0xC8: bitset      (dst), bit5
+    { "bitclear",    CF_CHG1 | CF_USE1 | CF_USE2            }, // 0xD0: bitclear    (dst), bit5
+    { "clrz",        0                                      }, // 0xDA: clrz
+    { "setz",        0                                      }, // 0xDB: setz
+    { "b",           CF_USE1 | CF_STOP | CF_JUMP            }, // 0xE0: b           target
+    { "bnz",         CF_USE1 | CF_JUMP                      }, // 0xE1: bnz         target
+    { "bz",          CF_USE1 | CF_JUMP                      }, // 0xE2: bz          target
+    { "bhi",         CF_USE1 | CF_JUMP                      }, // 0xE3: bhi         target
+    { "blo",         CF_USE1 | CF_JUMP                      }, // 0xE4: blo         target
+    { "call",        CF_USE1 | CF_CALL                      }, // 0xE8: call        target
+    { "ret",         CF_STOP                                }, // 0xF0: ret
+    { "wfe",         CF_USE1                                }, // 0xF8: wfe         mask24
 };
+
+CASSERT(qnumber(Instructions) == KIRK_INSN_LAST);

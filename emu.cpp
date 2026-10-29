@@ -1,129 +1,89 @@
 /* IDP emulator for KIRK - (c) Proxima 2023
 */
 
-
 #include "kirk.hpp"
 
-
-
-
-// ********** x-invalid: --invalid--
-
-static int KIRK_emu_x_invalid(const insn_t& insn)
+static void handle_mem_operand(const insn_t& insn, const op_t& x, bool is_read, bool is_write)
 {
-    return 0;
+    if (x.type != o_mem)
+        return;
+
+    insn.create_op_data(x.addr, x);
+
+    if (x.kirk_type == KIRK_OPERAND_MEM_INDIRECT)
+    {
+        // An indirect operand [(addr)] reads the pointer stored at x.addr
+        insn.add_dref(x.addr, x.offb, dr_R);
+        return;
+    }
+
+    // If this operand was converted from an immediate via manual refinfo_t (offb == 4),
+    // record an offset reference (dr_O).
+    if (x.n == 1 && x.offb == 4)
+    {
+        insn.add_dref(x.addr, x.offb, dr_O);
+        return;
+    }
+
+    if (is_read)
+        insn.add_dref(x.addr, x.offb, dr_R);
+    if (is_write)
+        insn.add_dref(x.addr, x.offb, dr_W);
 }
 
 static int KIRK_emu_standard_insn(const insn_t& insn)
 {
+    uint32 feature = insn.get_canon_feature(PH);
+
     if (insn.Op1.type == o_mem)
     {
-        insn.add_dref(insn.Op1.addr, insn.ea, dr_O);
+        bool use1 = (feature & CF_USE1) != 0;
+        bool chg1 = (feature & CF_CHG1) != 0;
+        handle_mem_operand(insn, insn.Op1, use1, chg1);
     }
+
     if (insn.Op2.type == o_mem)
     {
-        insn.add_dref(insn.Op2.addr, insn.ea, dr_O);
+        bool use2 = (feature & CF_USE2) != 0;
+        handle_mem_operand(insn, insn.Op2, use2, false);
     }
 
     return insn.size;
 }
 
-
-
-
 static int KIRK_emu_call_branch(const insn_t& insn)
 {
-    unsigned int val;
-    if (insn.Op1.type == o_near)
-    {
-        val = insn.Op1.addr;
-    }
-    else {
-        val = insn.Op1.value;
-    }
-
+    ea_t target = (insn.Op1.type == o_near) ? insn.Op1.addr : static_cast<ea_t>(insn.Op1.value);
     cref_t flag = has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN;
-    insn_add_cref(insn, val, 0, flag);
-
-    return 4;
+    insn.add_cref(target, insn.Op1.offb, flag);
+    return insn.size;
 }
-
-
-
-
 
 // Emulator entry
 int kirk_t::kirk_emu(const insn_t& insn)
 {
-    int len;
+    if (insn.itype == KIRK_INSN_X_INVALID || insn.size == 0)
+        return 0;
+
+    int len = 0;
     switch (insn.itype)
     {
-    case KIRK_INSN_X_INVALID:
-        len = KIRK_emu_x_invalid(insn); break;
-    case KIRK_INSN_00_NOP:
-    case KIRK_INSN_08_STORE2:
-    case KIRK_INSN_09_STORE:
-    case KIRK_INSN_0A_MOVX:
-    case KIRK_INSN_0B_MOV32:
-    case KIRK_INSN_0C_MOVY:
-    case KIRK_INSN_0D_MOV32A:
-    case KIRK_INSN_0E_MOV32AA:
-    case KIRK_INSN_10_CMPX:
-    case KIRK_INSN_11_CMPI:
-    case KIRK_INSN_12_CMPPLUS:
-    case KIRK_INSN_13_CMPA:
-    case KIRK_INSN_16_SUBA:
-    case KIRK_INSN_19_ADDI:
-    case KIRK_INSN_1B_ADDA:
-    case KIRK_INSN_21_ADDC:
-    case KIRK_INSN_29_SUBI:
-    case KIRK_INSN_30_OP30:
-    case KIRK_INSN_38_OP38:
-    case KIRK_INSN_39_ANDI:
-    case KIRK_INSN_3A_ANDA:
-    case KIRK_INSN_41_MOV8:
-    case KIRK_INSN_43_MOV16:
-    case KIRK_INSN_44_ORA:
-    case KIRK_INSN_49_XORI:
-    case KIRK_INSN_4B_XORA:
-    case KIRK_INSN_4E_XORX:
-    case KIRK_INSN_53_MOV128:
-    case KIRK_INSN_80_INC32:
-    case KIRK_INSN_88_DEC32:
-    case KIRK_INSN_89_OP89:
-    case KIRK_INSN_8B_OP8B:
-    case KIRK_INSN_90_LSH:
-    case KIRK_INSN_98_NAND:
-    case KIRK_INSN_A0_SETMODE:
-    case KIRK_INSN_B0_BYTESWAP:
-    case KIRK_INSN_C0_TEST:
-    case KIRK_INSN_C3_CHECK3:
-    case KIRK_INSN_C6_CHECK6:
-    case KIRK_INSN_C7_CHECK7:
-    case KIRK_INSN_C8_BITSET:
-    case KIRK_INSN_C9_CHECK9:
-    case KIRK_INSN_D0_BITCLEAR:
-    case KIRK_INSN_DA_CLRZ:
-    case KIRK_INSN_DB_SETZ:
-    case KIRK_INSN_F0_RET:
-    case KIRK_INSN_F8_INTR:
-        len = KIRK_emu_standard_insn(insn); break;
-    case KIRK_INSN_62_JZ:
-    case KIRK_INSN_68_JNZ:
     case KIRK_INSN_E0_B:
     case KIRK_INSN_E1_BNZ:
     case KIRK_INSN_E2_BZ:
-    case KIRK_INSN_E3_BGT:
-    case KIRK_INSN_E4_BLT:
+    case KIRK_INSN_E3_BHI:
+    case KIRK_INSN_E4_BLO:
     case KIRK_INSN_E8_CALL:
-    case KIRK_INSN_E9_CALL2:
-        len = KIRK_emu_call_branch(insn); break;
-    default: len = 0; break;
+        len = KIRK_emu_call_branch(insn);
+        break;
+
+    default:
+        len = KIRK_emu_standard_insn(insn);
+        break;
     }
 
-    if (len && !has_insn_feature(insn.itype, CF_STOP))
-        insn_add_cref(insn, insn.ea + len, 0, fl_F);
-
+    if (len > 0 && !has_insn_feature(insn.itype, CF_STOP))
+        insn.add_cref(insn.ea + len, 0, fl_F);
 
     return 1;
 }
